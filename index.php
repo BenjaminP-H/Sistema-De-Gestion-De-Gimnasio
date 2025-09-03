@@ -3,7 +3,7 @@
 ?>
     <div class="container mt-5">
         <h2 class="mb-4">Iniciar sesión</h2>
-        <form action="procesar.php" method="POST">
+        <form action="php/procesar.php" method="POST">
             <div class="mb-3">
                 <label for="usuario" class="form-label">Usuario</label>
                 <input type="text" class="form-control" id="usuario" name="usuario" required>
