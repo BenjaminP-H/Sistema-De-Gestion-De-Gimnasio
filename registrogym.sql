@@ -1,4 +1,4 @@
-CREATE TABLE `registrogym`.`clientes` (
+CREATE TABLE `registrogym`.`clientes` ( --tabla de clientes
     `id_cliente` INT NOT NULL AUTO_INCREMENT,
     `nombres` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
     `apellidos` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -10,13 +10,13 @@ CREATE TABLE `registrogym`.`clientes` (
     PRIMARY KEY (`id_cliente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `registrogym`.`planes` (
+CREATE TABLE `registrogym`.`planes` ( --tabla de planes
     `id_plan` INT NOT NULL AUTO_INCREMENT,
     `nombre_plan` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
     PRIMARY KEY (`id_plan`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `registrogym`.`pagos` (
+CREATE TABLE `registrogym`.`pagos` ( --tabla de pagos
     `id_pago` INT NOT NULL AUTO_INCREMENT,
     `id_cliente` INT NOT NULL,
     `id_plan` INT NOT NULL,
@@ -30,4 +30,12 @@ CREATE TABLE `registrogym`.`pagos` (
     PRIMARY KEY (`id_pago`),
     FOREIGN KEY (`id_cliente`) REFERENCES `clientes`(`id_cliente`) ON DELETE CASCADE,
     FOREIGN KEY (`id_plan`) REFERENCES `planes`(`id_plan`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `registrogym`.`usuarios` ( --tabla de usuarios
+    `id_usuario` INT NOT NULL AUTO_INCREMENT,
+    `usuario` VARCHAR(50) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `rol` ENUM('admin','empleado') DEFAULT 'empleado',
+    PRIMARY KEY (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
