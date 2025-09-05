@@ -1,8 +1,12 @@
 <?php
     require_once 'php/header.php';
+    session_start(); // Asegura que la sesión esté activa para leer mensajes
+
+    require_once 'php/funciones.php'; // Incluye funciones reutilizables, incluida verificarLogueo
 ?>
     <div class="container mt-5">
         <h2 class="mb-4">Iniciar sesión</h2>
+        <?php verificarLogueo(); // Muestra el mensaje de error si existe ?>
         <form action="php/procesar.php" method="POST">
             <div class="mb-3">
                 <label for="usuario" class="form-label">Usuario</label>

@@ -3,7 +3,7 @@
 
 session_start(); // Inicia la sesión para manejar variables de usuario y seguridad
 
-require_once __DIR__ . '/funciones.php'; // Incluye funciones reutilizables, como la notificación al admin
+require_once __DIR__ . '/funciones.php'; // Incluye funciones reutilizables
 
 // Conexión a la base de datos usando función reutilizable
 $conn = conectar_db();
@@ -19,7 +19,7 @@ if (!isset($_SESSION['intentos'])) {
     $_SESSION['intentos'] = [];
 }
 // Si no existe el contador para el usuario, lo inicializa en 0
-if (!isset($_SESSION['intentos'][$usuario])) {
+if (!isset($_SESSION['intentos'][$usuario])) {                     //VERIFICAR LUEGOOOOO!!!!!
     $_SESSION['intentos'][$usuario] = 0;
 }
 // Si no existe el contador para la IP, lo inicializa en 0
@@ -28,10 +28,14 @@ if (!isset($_SESSION['intentos'][$ip])) {
 }
 
 // Si el usuario o la IP están bloqueados por superar los intentos
+// Ahora, en vez de mostrar el mensaje aquí, lo guardamos en la sesión y redirigimos a index.php
 if ($_SESSION['intentos'][$usuario] >= 5 || $_SESSION['intentos'][$ip] >= 5) {
-    // Muestra mensaje de bloqueo y notifica al admin
-    echo '<div class="alert alert-danger">Acceso bloqueado por demasiados intentos fallidos. Contacta al administrador.</div>';
-    notificar_admin($usuario, $ip); // Envía correo y SMS al admin
+    // Guarda el mensaje de bloqueo en la sesión
+    $_SESSION['error_login'] = 'Acceso bloqueado por demasiados intentos fallidos. Vuelve a intentar en 30 minutos.';
+    // Notifica al admin por correo y SMS
+    notificar_admin($usuario, $ip);
+    // Redirige al formulario principal para mostrar el mensaje
+    header('Location: ../index.php');
     exit;
 }
 
@@ -59,23 +63,31 @@ if ($row = $result->fetch_assoc()) {
         // Si la contraseña es incorrecta, incrementa los contadores de intentos
         $_SESSION['intentos'][$usuario]++;
         $_SESSION['intentos'][$ip]++;
-        // Muestra mensaje genérico de error
-        echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
-        // Si se alcanzan los 5 intentos, notifica al admin
+        // Guarda mensaje de error en la sesión para mostrarlo en index.php
+        $_SESSION['error_login'] = 'Usuario o contraseña incorrectos.';
+        // Si se alcanzan los 5 intentos, bloquea y notifica
         if ($_SESSION['intentos'][$usuario] >= 5 || $_SESSION['intentos'][$ip] >= 5) {
+            $_SESSION['error_login'] = 'Acceso bloqueado por demasiados intentos fallidos. Vuelve a intentar en 30 minutos.';
             notificar_admin($usuario, $ip);
         }
+        // Redirige al formulario principal para mostrar el mensaje
+        header('Location: ../index.php');
+        exit;
     }
 } else {
     // Si el usuario no existe, incrementa los contadores de intentos
     $_SESSION['intentos'][$usuario]++;
     $_SESSION['intentos'][$ip]++;
-    // Muestra mensaje genérico de error
-    echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
-    // Si se alcanzan los 5 intentos, notifica al admin
+    // Guarda mensaje de error en la sesión para mostrarlo en index.php
+    $_SESSION['error_login'] = 'Usuario o contraseña incorrectos.';
+    // Si se alcanzan los 5 intentos, bloquea y notifica
     if ($_SESSION['intentos'][$usuario] >= 5 || $_SESSION['intentos'][$ip] >= 5) {
+        $_SESSION['error_login'] = 'Acceso bloqueado por demasiados intentos fallidos. Vuelve a intentar en 30 minutos.';
         notificar_admin($usuario, $ip);
     }
+    // Redirige al formulario principal para mostrar el mensaje
+    header('Location: ../index.php');
+    exit;
 }
 
 $stmt->close(); // Cierra la consulta preparada
