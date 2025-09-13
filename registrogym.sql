@@ -4,7 +4,6 @@ CREATE TABLE `registrogym`.`clientes` ( --tabla de clientes
     `apellidos` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
     `dni` VARCHAR(20) NOT NULL,
     `telefono` VARCHAR(20) NOT NULL,
-    `gmail` VARCHAR(100) NULL DEFAULT NULL,
     `foto_carnet` VARCHAR(255) NULL DEFAULT NULL,
     `fecha_registro` DATE NOT NULL,
     PRIMARY KEY (`id_cliente`)
@@ -12,7 +11,7 @@ CREATE TABLE `registrogym`.`clientes` ( --tabla de clientes
 
 CREATE TABLE `registrogym`.`planes` ( --tabla de planes
     `id_plan` INT NOT NULL AUTO_INCREMENT,
-    `nombre_plan` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    `nombre_plan` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,--MODIFICAR LUEGO ya que son 3 tipos de planes
     PRIMARY KEY (`id_plan`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -26,7 +25,6 @@ CREATE TABLE `registrogym`.`pagos` ( --tabla de pagos
     `modo_pago` ENUM('Efectivo','Transferencia') NOT NULL,
     `estado` ENUM('Pagado','Vencido','Cancelado') NOT NULL,
     `fecha_vencimiento` DATE NOT NULL,
-    `comentarios` TEXT NULL,
     PRIMARY KEY (`id_pago`),
     FOREIGN KEY (`id_cliente`) REFERENCES `clientes`(`id_cliente`) ON DELETE CASCADE,
     FOREIGN KEY (`id_plan`) REFERENCES `planes`(`id_plan`) ON DELETE CASCADE

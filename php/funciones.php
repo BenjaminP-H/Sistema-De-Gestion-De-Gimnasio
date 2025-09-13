@@ -16,15 +16,23 @@ function verificarLogueo() {
 
 // Función para conectar a la base de datos
 function conectar_db() {
-    $host = 'localhost';
-    $db = 'registrogym';
-    $user = 'root';
-    $pass = '';
-    $conn = new mysqli($host, $user, $pass, $db);
-    if ($conn->connect_error) {
-        die('Error de conexión: ' . $conn->connect_error);
+    $host = 'localhost';       // Cambiar si es necesario
+    $db   = 'registrogym';             // Nombre de tu base de datos
+    $user = 'root';            // Usuario
+    $pass = '';                // Contraseña
+    $charset = 'utf8mb4';
+
+    $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+
+    try {
+        $pdo = new PDO($dsn, $user, $pass);
+        // Configura PDO para que lance excepciones en caso de error
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    } catch (PDOException $e) {
+        // En caso de error, termina la ejecución y muestra mensaje
+        die("❌ Error al conectar a la base de datos: " . $e->getMessage());
     }
-    return $conn;
 }
 
 // Función para desconectar la base de datos
