@@ -5,6 +5,7 @@ require_once '../php/funciones.php';
 // ================================
 // 1️⃣ CONSTANTES Y FUNCIONES AUXILIARES
 // ================================
+//Esto sirve para restringir el tamaño  de la fotos y tipos 
 define('MAX_FILE_SIZE', 2 * 1024 * 1024);
 define('ALLOWED_EXTENSIONS', ['jpg','jpeg','png','gif']);
 define('ALLOWED_MIME_TYPES', ['image/jpeg','image/png','image/gif']);
@@ -73,7 +74,7 @@ try {
     $sql = "INSERT INTO clientes
             (nombres, apellidos, dni, telefono, fecha_registro, metodo_pago, dias_pagados, plan, fecha_pago, monto, foto)
             VALUES
-            (:nombre, :apellido, :dni, :telefono, NOW(), :metodo_pago, :dias_pagados, :plan, :fecha_pago, :monto, :foto)";
+            (:nombre, :apellido, :dni, :telefono, NOW(), :modo_pago, :dias_pagados, :plan, :fecha_pago, :monto, :foto)";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
