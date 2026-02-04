@@ -1,26 +1,61 @@
-# Sistema de Gestión de Clientes – Gimnasio
+Sistema de Gestión de Clientes – Gimnasio
+Descripción
 
-## Descripción
-Sistema web desarrollado en PHP puro para el registro y gestión de clientes de un gimnasio.
-Permite administrar información de clientes mediante formularios validados y base de datos.
+Aplicación web desarrollada en PHP puro orientada a la gestión de clientes de un gimnasio.
+Permite registrar, visualizar, editar y eliminar clientes mediante formularios validados y una base de datos MySQL.
 
-## Funcionalidades
-- Registro de clientes
-- Edición y eliminación de clientes
-- Formularios con validaciones en PHP
-- Conexión a base de datos MySQL
-- Listado de clientes
+Proyecto realizado con fines educativos y prácticos, enfocado en el aprendizaje de desarrollo web backend.
 
-## Tecnologías utilizadas
-- PHP (puro)
-- MySQL
-- HTML
-- CSS
-- JavaScript (básico)
-- Git / GitHub
+Funcionalidades
 
-## Objetivo del proyecto
-Proyecto personal orientado al aprendizaje y práctica de desarrollo web con PHP y MySQL.
+Registro de clientes
 
-## Estado del proyecto
+Edición y eliminación de clientes
+
+Validación de formularios en PHP
+
+Listado de clientes
+
+Conexión a base de datos MySQL
+
+Tecnologías utilizadas
+
+PHP (puro)
+
+MySQL
+
+HTML5
+
+CSS3
+
+JavaScript (básico)
+
+Bootstrap
+
+Git / GitHub
+
+Estructura del proyecto
+
+/php → lógica del sistema
+
+/css → estilos
+
+/img → recursos gráficos
+
+/index.php → punto de entrada principal
+
+Objetivo del proyecto
+
+Consolidar conocimientos en:
+
+Desarrollo backend con PHP
+
+Manejo de bases de datos relacionales
+
+Organización de proyectos web
+
+Control de versiones con Git y GitHub
+
+Estado del proyecto
+
 En desarrollo.
