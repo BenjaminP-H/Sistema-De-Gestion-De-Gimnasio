@@ -1,61 +1,56 @@
-Sistema de Gestión de Clientes – Gimnasio
-Descripción
+# Sistema de Gestión de Clientes – Gimnasio
 
-Aplicación web desarrollada en PHP puro orientada a la gestión de clientes de un gimnasio.
+## Descripción
+
+Aplicación web desarrollada en **PHP puro** orientada a la gestión de clientes de un gimnasio.  
 Permite registrar, visualizar, editar y eliminar clientes mediante formularios validados y una base de datos MySQL.
 
-Proyecto realizado con fines educativos y prácticos, enfocado en el aprendizaje de desarrollo web backend.
+Proyecto realizado con fines **educativos y prácticos**, enfocado en el aprendizaje de desarrollo web backend.
 
-Funcionalidades
+---
 
-Registro de clientes
+## Funcionalidades
 
-Edición y eliminación de clientes
+- Registro de clientes  
+- Edición y eliminación de clientes  
+- Validación de formularios en PHP  
+- Listado de clientes  
+- Conexión a base de datos MySQL  
 
-Validación de formularios en PHP
+---
 
-Listado de clientes
+## Tecnologías utilizadas
 
-Conexión a base de datos MySQL
+- PHP (puro)  
+- MySQL  
+- HTML5  
+- CSS3  
+- JavaScript (básico)  
+- Bootstrap  
+- Git / GitHub  
 
-Tecnologías utilizadas
+---
 
-PHP (puro)
+## Estructura del proyecto
 
-MySQL
+- `/php` → lógica del sistema  
+- `/css` → estilos  
+- `/img` → recursos gráficos  
+- `/index.php` → punto de entrada principal  
 
-HTML5
+---
 
-CSS3
-
-JavaScript (básico)
-
-Bootstrap
-
-Git / GitHub
-
-Estructura del proyecto
-
-/php → lógica del sistema
-
-/css → estilos
-
-/img → recursos gráficos
-
-/index.php → punto de entrada principal
-
-Objetivo del proyecto
+## Objetivo del proyecto
 
 Consolidar conocimientos en:
 
-Desarrollo backend con PHP
+- Desarrollo backend con PHP  
+- Manejo de bases de datos relacionales  
+- Organización de proyectos web  
+- Control de versiones con Git y GitHub  
 
-Manejo de bases de datos relacionales
+---
 
-Organización de proyectos web
-
-Control de versiones con Git y GitHub
-
-Estado del proyecto
+## Estado del proyecto
 
 En desarrollo.
