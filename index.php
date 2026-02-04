@@ -1,24 +1,66 @@
 <?php
-    require_once 'php/header.php';
-    session_start(); // Asegura que la sesión esté activa para leer mensajes
-
-    require_once 'php/funciones.php'; // Incluye funciones reutilizables, incluida verificarLogueo
+require_once 'php/header.php';
+require_once 'php/session.php';
+require_once 'php/funciones.php';
 ?>
-    <div class="container mt-5">
-        <h2 class="mb-4">Iniciar sesión</h2>
-        <?php verificarLogueo(); // Muestra el mensaje de error si existe ?>
-        <form action="php/procesar.php" method="POST">
-            <div class="mb-3">
-                <label for="usuario" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="usuario" name="usuario" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Ingresar</button>
+
+<section class="login-page">
+
+    <article class="login-card">
+
+        <h2>Iniciar sesión</h2>
+
+        <?php verificarLogueo(); ?>
+
+        <form action="php/procesar.php" method="POST" novalidate>
+
+            <!-- USUARIO -->
+            <section class="mb-3">
+                <label class="form-label">Usuario</label>
+
+                <section class="input-group login-input">
+                    <span class="input-group-text">
+                        <i class="bi bi-person-fill"></i>
+                    </span>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="usuario"
+                        placeholder="Ingresá tu usuario"
+                        required
+                    >
+                </section>
+            </section>
+
+            <!-- CONTRASEÑA -->
+            <section class="mb-3">
+                <label class="form-label">Contraseña</label>
+
+                <section class="input-group login-input">
+                    <span class="input-group-text">
+                        <i class="bi bi-lock-fill"></i>
+                    </span>
+
+                    <input
+                        type="password"
+                        class="form-control"
+                        name="password"
+                        placeholder="Ingresá tu contraseña"
+                        required
+                    >
+                </section>
+            </section>
+
+            <button type="submit" class="btn btn-warning w-100 login-btn">
+                Ingresar
+            </button>
         </form>
-    </div>
+
+    </article>
+
+</section>
+
 <?php
-    require_once 'php/footer.php';
-?> 
+require_once 'php/footer.php';
+?>

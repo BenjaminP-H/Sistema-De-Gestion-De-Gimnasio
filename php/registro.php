@@ -1,88 +1,126 @@
 <?php
-// registro.php: Formulario de registro de nuevos usuarios
-require_once '../php/header.php';
-session_start(); // Para manejar mensajes flash
+require_once 'header.php';
+require_once 'session.php';
+require_once 'funciones.php';
+
+verificarSesion();
+
+// Traer planes desde la BD
+$pdo = conectar_db();
+$planes = $pdo->query("SELECT nombre_plan FROM planes ORDER BY nombre_plan")->fetchAll();
 ?>
-<div class="container mt-5">
-    <h2 class="mb-4">Registro de nuevo usuario</h2>
 
-    <!-- Mostrar mensaje flash si existe -->
-    <?php if (!empty($_SESSION['flash_message'])): ?>
-        <div class="alert alert-<?php echo $_SESSION['flash_type'] ?? 'info'; ?>">
-            <?php 
-                echo $_SESSION['flash_message']; 
-                unset($_SESSION['flash_message'], $_SESSION['flash_type']);
-            ?>
-        </div>
-    <?php endif; ?>
+<main class="container my-5 registrar-page">
 
-    <!-- Formulario -->
-    <form action="cargar_usuario.php" method="POST" enctype="multipart/form-data">
-        <!-- Datos personales -->
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Nombres</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
-        </div>
+    <article class="registrar-card">
 
-        <div class="mb-3">
-            <label for="apellido" class="form-label">Apellidos</label>
-            <input type="text" class="form-control" id="apellido" name="apellido" required>
-        </div>
+        <header class="mb-4 text-center">
+            <h2 class="text-warning fw-bold">Registro de nuevo usuario</h2>
+        </header>
 
-        <div class="mb-3">
-            <label for="dni" class="form-label">DNI</label>
-            <input type="text" class="form-control" id="dni" name="dni" required>
-        </div>
+        <!-- Mensaje flash -->
+        <?php if (!empty($_SESSION['flash_message'])): ?>
+            <section class="alert alert-<?= $_SESSION['flash_type'] ?? 'info' ?>">
+                <?= $_SESSION['flash_message'] ?>
+                <?php unset($_SESSION['flash_message'], $_SESSION['flash_type']); ?>
+            </section>
+        <?php endif; ?>
 
-        <div class="mb-3">
-            <label for="telefono" class="form-label">Teléfono</label>
-            <input type="text" class="form-control" id="telefono" name="telefono">
-        </div>
+        <form action="php/confirmar_registro.php" method="POST" enctype="multipart/form-data">
 
-        <div class="mb-3">
-            <label for="foto" class="form-label">Foto carnet (opcional)</label>
-            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
-        </div>
+            <!-- =========================
+                 DATOS PERSONALES
+            ========================= -->
+            <section class="mb-4">
+                <h5 class="text-dark mb-3">Datos personales</h5>
 
-        <hr>
+                <section class="row g-3">
 
-        <!-- Datos de pago -->
-        <div class="mb-3">
-            <label for="monto" class="form-label">Monto</label>
-            <input type="number" class="form-control" id="monto" name="monto" required>
-        </div>
+                    <article class="col-md-6">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="nombre" class="form-control" required>
+                    </article>
 
-        <div class="mb-3">
-            <label for="metodo_pago" class="form-label">Método de pago</label>
-            <select class="form-control" id="metodo_pago" name="metodo_pago" required>
-                <option value="efectivo">Efectivo</option>
-                <option value="transferencia">Transferencia</option>
-            </select>
-        </div>
+                    <article class="col-md-6">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" name="apellido" class="form-control" required>
+                    </article>
 
-        <div class="mb-3">
-            <label for="dias" class="form-label">Días que paga</label>
-            <input type="number" class="form-control" id="dias" name="dias" required>
-        </div>
+                    <article class="col-md-6">
+                        <label class="form-label">DNI</label>
+                        <input type="text" name="dni" class="form-control" required>
+                    </article>
 
-        <div class="mb-3">
-            <label for="plan" class="form-label">Tipo de plan</label>
-            <select class="form-control" id="plan" name="plan" required>
-                <option value="aparatos">Aparatos</option>
-                <option value="funcional">Funcional</option>
-                <option value="zumba">Zumba</option>
-                <option value="otro">Otro</option>
-            </select>
-        </div>
+                    <article class="col-md-6">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="telefono" class="form-control">
+                    </article>
 
-        <div class="mb-3">
-            <label for="fecha_pago" class="form-label">Fecha de pago</label>
-            <input type="date" class="form-control" id="fecha_pago" name="fecha_pago" required>
-        </div>
+                    <article class="col-12">
+                        <label class="form-label">Foto carnet (opcional)</label>
+                        <input type="file" name="foto" class="form-control" accept="image/*">
+                    </article>
 
-        <button type="submit" class="btn btn-success">Registrar usuario</button>
-    </form>
-</div>
-<?php
-require_once '../php/footer.php';
-?>
+                </section>
+            </section>
+
+            <hr>
+
+            <!-- =========================
+                 DATOS MEMBRESÍA
+            ========================= -->
+            <section class="mb-4">
+                <h5 class="text-dark mb-3">Datos de la membresía</h5>
+
+                <section class="row g-3">
+
+                    <article class="col-md-4">
+                        <label class="form-label">Monto</label>
+                        <input type="number" name="monto" class="form-control" min="0" required>
+                    </article>
+
+                    <article class="col-md-4">
+                        <label class="form-label">Días que paga</label>
+                        <input type="number" name="dias" class="form-control" min="1" max="31"required>
+                        <small class="text-muted">
+                            Máximo 31 días
+                        </small>
+                    </article>
+
+                    <article class="col-md-4">
+                        <label class="form-label">Método de pago</label>
+                        <select name="metodo_pago" class="form-select" required>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Transferencia">Transferencia</option>
+                        </select>
+                    </article>
+
+                    <article class="col-md-6">
+                        <label class="form-label">Tipo de plan</label>
+                        <select name="plan" class="form-select" required>
+                            <option value="">Seleccionar plan</option>
+                            <?php foreach ($planes as $plan): ?>
+                                <option value="<?= htmlspecialchars($plan['nombre_plan']) ?>">
+                                    <?= htmlspecialchars($plan['nombre_plan']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </article>
+
+                </section>
+            </section>
+
+            <!-- BOTÓN -->
+            <section class="text-center">
+                <button type="submit" class="btn btn-success px-5">
+                    Registrar usuario
+                </button>
+            </section>
+
+        </form>
+
+    </article>
+
+</main>
+
+<?php require_once 'footer.php'; ?>

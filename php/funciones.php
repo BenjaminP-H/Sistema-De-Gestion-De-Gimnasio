@@ -1,56 +1,102 @@
 <?php
-// Función para mostrar mensajes de error de login en el formulario
+// ===============================
+// FUNCIONES GENERALES - GYM
+// ===============================
+
+// Mostrar errores de login
 function verificarLogueo() {
     if (isset($_SESSION['error_login'])) {
         echo '<div class="alert alert-danger">'.$_SESSION['error_login'].'</div>';
-        // Si el usuario está bloqueado, puedes mostrar un mensaje adicional
-        if ($_SESSION['error_login'] === 'Acceso bloqueado por demasiados intentos fallidos. Vuelve a intentar en 30 minutos.') {
-            // Aquí podrías agregar lógica para mostrar tiempo restante, etc.
-        }
-        unset($_SESSION['error_login']); // Elimina el mensaje para que no se repita
+        unset($_SESSION['error_login']);
     }
 }
-?>
-<?php
-// funciones.php: Funciones reutilizables para el sistema Gym
 
-// Función para conectar a la base de datos
+// Conexión PDO
 function conectar_db() {
-    $host = 'localhost';       // Cambiar si es necesario
-    $db   = 'registrogym';             // Nombre de tu base de datos
-    $user = 'root';            // Usuario
-    $pass = '';                // Contraseña
+    $host = 'localhost';
+    $db   = 'registrogym';
+    $user = 'root';
+    $pass = '';
     $charset = 'utf8mb4';
 
     $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
     try {
-        $pdo = new PDO($dsn, $user, $pass);
-        // Configura PDO para que lance excepciones en caso de error
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
         return $pdo;
     } catch (PDOException $e) {
-        // En caso de error, termina la ejecución y muestra mensaje
         die("❌ Error al conectar a la base de datos: " . $e->getMessage());
     }
 }
 
-// Función para desconectar la base de datos
-function desconectar_db($conn) {
-    if ($conn) {
-        $conn->close();
+// Verificar sesión
+function verificarSesion() {
+    if (!isset($_SESSION['usuario'])) {
+        header('Location: ../index.php');
+        exit;
     }
 }
 
-// Configuración de notificaciones
+// ===============================
+// NOTIFICACIONES (opcional)
+// ===============================
 $admin_email = 'benjaminpereina@gmail.com';
-$admin_sms = '3815849276@sms.claro.com.ar'; // Email-to-SMS para Claro
+$admin_sms = '3815849276@sms.claro.com.ar';
 
-// Función para enviar notificación al admin
 function notificar_admin($usuario, $ip) {
     global $admin_email, $admin_sms;
-    $asunto = 'Alerta: Usuario/IP bloqueado en Gym';
-    $mensaje = "Se ha bloqueado el acceso por demasiados intentos fallidos.\nUsuario: $usuario\nIP: $ip\nFecha: " . date('Y-m-d H:i:s');
+
+    $asunto = 'Alerta de seguridad - Gym';
+    $mensaje = "Acceso bloqueado\nUsuario: $usuario\nIP: $ip\nFecha: ".date('Y-m-d H:i:s');
+
     @mail($admin_email, $asunto, $mensaje);
-    @mail($admin_sms, '', $mensaje); // SMS sin asunto
+    @mail($admin_sms, '', $mensaje);
+}
+/**
+ * Obtiene el ID del plan a partir del nombre del plan
+ * Ej: "Aparatos" → 1
+ * Lanza excepción si no existe
+ */
+function obtenerPlanId(PDO $pdo, string $nombrePlan): int
+{
+    $stmt = $pdo->prepare("
+        SELECT id_plan
+        FROM planes
+        WHERE LOWER(nombre_plan) = LOWER(:plan)
+        LIMIT 1
+    ");
+    $stmt->execute([
+        ':plan' => trim($nombrePlan)
+    ]);
+
+    $id_plan = $stmt->fetchColumn();
+
+    if (!$id_plan) {
+        throw new Exception("El plan seleccionado no existe.");
+    }
+
+    return (int)$id_plan;
+}
+// ===============================
+// FUNCION DE FECHA DE VENCIMIENTO MAS DIAS
+// ===============================
+function calcularNuevaFechaVencimiento($fecha_vencimiento_actual, $dias_nuevos) {
+    $hoy = date('Y-m-d');
+
+    // Si tiene vencimiento y aún no venció → sumar desde ahí
+    if ($fecha_vencimiento_actual && $fecha_vencimiento_actual >= $hoy) {
+        return date(
+            'Y-m-d',
+            strtotime($fecha_vencimiento_actual . " +$dias_nuevos days")
+        );
+    }
+
+    // Si está vencido o no tiene pago → sumar desde hoy
+    return date(
+        'Y-m-d',
+        strtotime($hoy . " +$dias_nuevos days")
+    );
 }

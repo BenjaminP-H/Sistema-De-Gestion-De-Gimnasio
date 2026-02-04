@@ -1,0 +1,588 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+/* =====================================================
+   COLORES BASE
+===================================================== */
+body {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #262B32, #090C11);
+    color: #FFFFFF;
+}
+/* =====================================================
+   NAVBAR – BASE GLOBAL
+===================================================== */
+.navbar .nav-link {
+    font-weight: 500;
+    transition: color 0.25s ease;
+}
+
+/* =====================================================
+   LOGIN PAGE – LAYOUT
+===================================================== */
+.login-page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #262B32, #090C11);
+}
+
+/* =====================================================
+   LOGIN CARD
+===================================================== */
+.login-card {
+    max-width: 440px;
+    width: 100%;
+    padding: 40px 35px;
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    box-shadow:
+        0 20px 40px rgba(0,0,0,0.25),
+        0 8px 16px rgba(0,0,0,0.15);
+    animation: fadeUp 0.5s ease;
+}
+
+/* Título */
+.login-card h2 {
+    text-align: center;
+    margin-bottom: 28px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #262B32;
+}
+
+/* =====================================================
+   FORMULARIO LOGIN
+===================================================== */
+.login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* =====================================================
+   INPUTS LOGIN
+===================================================== */
+.login-input .input-group-text {
+    background-color: #F1F1F1;
+    border-radius: 10px 0 0 10px;
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+/* Reacción al foco */
+.login-input:focus-within .input-group-text {
+    background-color: #FFD300;
+    color: #262B32;
+}
+
+/* =====================================================
+   BOTÓN LOGIN
+===================================================== */
+.login-btn {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+/* =====================================================
+   ANIMACIONES
+===================================================== */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* =====================================================
+   INPUTS – ESTILO GENERAL
+===================================================== */
+input,
+select,
+textarea {
+    border-radius: 10px !important;
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #FFD300 !important;
+    box-shadow: 0 0 0 0.15rem rgba(255, 211, 0, 0.35) !important;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+    background-color: #FFFBE6;
+}
+
+/* =====================================================
+   NAVBAR – INICIO
+===================================================== */
+.inicio-navbar {
+    background-color: #262B32;
+    padding: 16px 0;
+}
+
+.inicio-navbar .navbar-brand a {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #FFD300;
+}
+
+/* =====================================================
+   MENU LINKS
+===================================================== */
+.inicio-menu .nav-link {
+    margin-right: 20px;
+    color: #FFFFFF !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.inicio-menu .nav-link:hover,
+.inicio-menu .nav-link.active {
+    color: #FFD300 !important;
+}
+
+/* =====================================================
+   ICONO HAMBURGUESA
+===================================================== */
+.navbar-toggler {
+    border-color: #FFD300;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23FFD300' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* =====================================================
+   FILTROS NAVBAR (ESTADO / PLAN / FILTRAR)
+===================================================== */
+.inicio-filtros {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Selects */
+.inicio-filtros select {
+    background-color: #1B1F26;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 211, 0, 0.35);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    min-width: 115px;
+}
+
+.inicio-filtros select:hover,
+.inicio-filtros select:focus {
+    background-color: #222831;
+    border-color: #FFD300;
+    box-shadow: 0 0 0 0.12rem rgba(255, 211, 0, 0.35);
+}
+
+/* Opciones del select */
+.inicio-filtros select option {
+    background-color: #1B1F26;
+    color: #FFFFFF;
+}
+
+/* Botón filtrar */
+.inicio-filtros button {
+    background-color: #FFD300;
+    color: #262B32;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition:
+        background-color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.inicio-filtros button:hover {
+    background-color: #E6BE00;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* =====================================================
+   TABLA CLIENTES
+===================================================== */
+.inicio-tabla {
+    background-color: #111;
+    overflow: hidden;
+}
+
+.inicio-tabla thead {
+    background-color: #262B32;
+}
+
+.inicio-tabla thead th {
+    color: #FFD300;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid rgba(255, 211, 0, 0.25);
+}
+
+.inicio-tabla tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.inicio-tabla tbody tr:hover {
+    background-color: rgba(255, 193, 7, 0.08);
+}
+
+/* Foto cliente */
+.cliente-foto {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #FFD300;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+.pie {
+    width: 100%;
+    background: linear-gradient(135deg, #262B32, #090C11);
+    color: #FFFFFF;
+    text-align: center;
+    padding: 18px 10px;
+    font-size: 0.9rem;
+}
+
+.pie p {
+    margin: 0;
+    opacity: 0.85;
+}
+
+
+/* =====================================================
+   ANIMACIÓN MENU – SOLO MOBILE
+===================================================== */
+@media (max-width: 768px) {
+
+    .navbar-collapse {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition:
+            max-height 0.7s ease,
+            opacity 0.15s ease,
+            transform 0.5s ease;
+    }
+
+    .navbar-collapse.show {
+        max-height: 600px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .inicio-menu {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .inicio-menu .nav-item {
+        width: 100%;
+    }
+
+    .inicio-menu .nav-link {
+        margin-right: 0;
+        padding: 10px 0;
+        justify-content: center;
+    }
+
+    .inicio-filtros {
+        width: 100%;
+        margin-top: 12px;
+        flex-direction: column;
+    }
+
+    .inicio-filtros select,
+    .inicio-filtros button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* =====================================================
+   FORZAR DESKTOP EN PANTALLAS MEDIAS
+===================================================== */
+@media (min-width: 850px) {
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .navbar-collapse {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        max-height: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        overflow: visible;
+    }
+
+    .navbar-nav {
+        flex-direction: row !important;
+        align-items: center;
+    }
+}
+/* =====================================================
+   INICIO PAGE – LAYOUT
+===================================================== */
+.inicio-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+/* =====================================================
+   REGISTRAR PAGE
+===================================================== */
+.registrar-page {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Card principal */
+.registrar-card {
+    width: 100%;
+    max-width: 900px;
+    background-color: #FFFFFF;
+    color: #262B32;
+    padding: 40px 45px;
+    border-radius: 20px;
+    box-shadow:
+        0 24px 50px rgba(0,0,0,0.35),
+        0 10px 20px rgba(0,0,0,0.2);
+    animation: fadeUp 0.5s ease;
+}
+
+/* Título */
+.registrar-card h2 {
+    font-weight: 800;
+    letter-spacing: 0.6px;
+}
+
+/* Subtítulos */
+.registrar-card h5 {
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+/* Separador */
+.registrar-card hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 211, 0, 0.6),
+        transparent
+    );
+    margin: 30px 0;
+}
+
+/* Labels */
+.registrar-card .form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Inputs */
+.registrar-card input,
+.registrar-card select {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+}
+
+/* Botón */
+.registrar-card button {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.registrar-card button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+
+/* Alert */
+.registrar-card .alert {
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .registrar-card {
+        padding: 30px 25px;
+    }
+}
+/* =====================================================
+   CARD CONFIRMACIÓN (REGISTRO / RENOVACIÓN)
+===================================================== */
+
+.card-animada {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    animation: cardEntrada 0.6s ease-out forwards;
+}
+
+@keyframes cardEntrada {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Hover elegante */
+.card-animada:hover {
+    transform: translateY(-4px);
+    transition: transform 0.3s ease;
+}
+/* =====================================================
+   CONFIRMACIÓN REGISTRO
+===================================================== */
+
+.confirmacion-page {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 15px;
+}
+
+.confirmacion-card {
+    background: #FFFFFF;
+    color: #262B32;
+    width: 100%;
+    max-width: 760px;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow:
+        0 30px 60px rgba(0,0,0,0.35),
+        0 12px 25px rgba(0,0,0,0.2);
+}
+
+.confirmacion-header {
+    background: linear-gradient(135deg, #262B32, #111);
+    color: #FFD300;
+    padding: 18px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 0.6px;
+}
+
+.confirmacion-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 30px;
+    padding: 30px;
+}
+
+.confirmacion-foto img {
+    width: 100%;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+.confirmacion-info h4 {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.confirmacion-info hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, #FFD300, transparent);
+    margin: 16px 0;
+}
+
+.confirmacion-info p {
+    margin-bottom: 6px;
+}
+
+.confirmacion-info .vencimiento {
+    margin-top: 12px;
+    font-weight: 700;
+    color: #198754;
+}
+
+.confirmacion-footer {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #F5F5F5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .confirmacion-body {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+}
