@@ -1,9 +1,10 @@
 <?php
-require_once 'session.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 verificarSesion();
 
 if (empty($_GET['foto'])) {
-    header('Location: ../registro.php');
+    header('Location: ../frontend/registro.php');
     exit;
 }
 
@@ -18,6 +19,6 @@ if (file_exists($ruta_temp)) {
 $_SESSION['flash_message'] = 'Registro cancelado y foto eliminada';
 $_SESSION['flash_type'] = 'danger';
 
-header('Location: ../registro.php');
+header('Location: ../frontend/registro.php');
 exit;
 ?>

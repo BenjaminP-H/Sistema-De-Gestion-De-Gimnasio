@@ -1,14 +1,18 @@
 <?php
-require_once 'header.php';
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/header.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
 // Traer planes desde la BD
 $pdo = conectar_db();
 $planes = $pdo->query("SELECT nombre_plan FROM planes ORDER BY nombre_plan")->fetchAll();
+
+$menu_activo = 'registro';
 ?>
+
+<?php require_once __DIR__ . '/../reutilizable/menu.php'; ?>
 
 <main class="container my-5 registrar-page">
 
@@ -26,7 +30,7 @@ $planes = $pdo->query("SELECT nombre_plan FROM planes ORDER BY nombre_plan")->fe
             </section>
         <?php endif; ?>
 
-        <form action="php/confirmar_registro.php" method="POST" enctype="multipart/form-data">
+        <form action="backend/confirmar_registro.php" method="POST" enctype="multipart/form-data">
 
             <!-- =========================
                  DATOS PERSONALES
@@ -123,4 +127,4 @@ $planes = $pdo->query("SELECT nombre_plan FROM planes ORDER BY nombre_plan")->fe
 
 </main>
 
-<?php require_once 'footer.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>

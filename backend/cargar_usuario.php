@@ -1,6 +1,6 @@
 <?php
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
@@ -32,14 +32,14 @@ $foto_file    = $_FILES['foto'] ?? null;
    VALIDACIÓN
 ============================== */
 if (!$nombre || !$apellido || !$dni || !$plan_nombre || $dias_pagados <= 0 || $monto <= 0) {
-    redirect_with_message('registro.php', 'Datos obligatorios incompletos', false);
+    redirect_with_message('../frontend/registro.php', 'Datos obligatorios incompletos', false);
 }
 
 /* ==============================
    FOTO FINAL
 ============================== */
 $foto_path = 'sinfoto.webp'; // FOTO POR DEFECTO
-$carpeta_clientes = '../img/clientes/';
+$carpeta_clientes = __DIR__ . '/../img/clientes/';
 
 // Si viene foto temporal de confirmar_registro
 if ($foto_temp) {
@@ -55,7 +55,7 @@ if ($foto_temp) {
         $ruta_final = $carpeta_clientes . $foto_path;
 
         if (!rename($ruta_temp, $ruta_final)) {
-            redirect_with_message('registro.php', 'Error al mover la foto a clientes', false);
+            redirect_with_message('../frontend/registro.php', 'Error al mover la foto a clientes', false);
         }
     }
 }
@@ -65,13 +65,13 @@ elseif ($foto_file && $foto_file['error'] !== UPLOAD_ERR_NO_FILE) {
     $permitidas = ['jpg','jpeg','png','webp'];
 
     if (!in_array($ext, $permitidas)) {
-        redirect_with_message('registro.php', 'Formato de imagen no válido', false);
+        redirect_with_message('../frontend/registro.php', 'Formato de imagen no válido', false);
     }
 
     $foto_path = uniqid('cliente_') . '.' . $ext;
 
     if (!move_uploaded_file($foto_file['tmp_name'], $carpeta_clientes . $foto_path)) {
-        redirect_with_message('registro.php', 'Error al subir la imagen', false);
+        redirect_with_message('../frontend/registro.php', 'Error al subir la imagen', false);
     }
 }
 
@@ -121,9 +121,10 @@ try {
     ]);
 
     $pdo->commit();
-    redirect_with_message('inicio.php', 'Cliente registrado correctamente');
+    redirect_with_message('../frontend/inicio.php', 'Cliente registrado correctamente');
 
 } catch (Exception $e) {
     $pdo->rollBack();
-    redirect_with_message('registro.php', 'Error: ' . $e->getMessage(), false);
+    redirect_with_message('../frontend/registro.php', 'Error: ' . $e->getMessage(), false);
 }
+

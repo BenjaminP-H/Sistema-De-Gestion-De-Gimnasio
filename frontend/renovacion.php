@@ -1,7 +1,7 @@
 <?php
-require_once 'header.php';
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/header.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
@@ -13,6 +13,9 @@ if (!$id_cliente) {
     header('Location: inicio.php');
     exit;
 }
+
+$menu_activo = 'renovacion';
+require_once __DIR__ . '/../reutilizable/menu.php';
 ?>
 
 <main class="container mt-5" style="max-width: 500px;">
@@ -31,7 +34,7 @@ if (!$id_cliente) {
     <?php endif; ?>
 
     <!-- FORMULARIO -->
-    <form action="php/confirmar_renovacion.php" method="POST">
+    <form action="backend/confirmar_renovacion.php" method="POST">
 
         <!-- ID CLIENTE -->
         <input type="hidden" name="id_cliente" value="<?= htmlspecialchars($id_cliente) ?>">
@@ -90,7 +93,7 @@ if (!$id_cliente) {
                 Continuar
             </button>
 
-            <a href="php/inicio.php" class="btn btn-secondary">
+            <a href="frontend/inicio.php" class="btn btn-secondary">
                 Cancelar
             </a>
         </div>
@@ -99,4 +102,4 @@ if (!$id_cliente) {
 
 </main>
 
-<?php require_once 'footer.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>

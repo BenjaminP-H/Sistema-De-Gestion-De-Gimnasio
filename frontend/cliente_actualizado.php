@@ -1,7 +1,7 @@
 <?php
-require_once '../php/header.php';
-require_once '../php/session.php';
-require_once '../php/funciones.php';
+require_once __DIR__ . '/../reutilizable/header.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
@@ -38,6 +38,9 @@ $stmt = $pdo->prepare("
 $stmt->execute([$id_cliente]);
 $pago = $stmt->fetch();
 
+$menu_activo = 'inicio';
+require_once __DIR__ . '/../reutilizable/menu.php';
+
 ?>
 
 <main class="container mt-5">
@@ -52,7 +55,7 @@ $pago = $stmt->fetch();
             <div class="col-4 text-center">
                 <?php if ($cliente['foto_carnet']): ?>
                     <img
-                        src="../img/<?= htmlspecialchars($cliente['foto_carnet']) ?>"
+                        src="img/clientes/<?= htmlspecialchars($cliente['foto_carnet']) ?>"
                         class="img-fluid rounded border"
                         style="max-height:150px"
                     >
@@ -85,7 +88,7 @@ $pago = $stmt->fetch();
         </div>
 
         <div class="d-grid mt-4">
-            <a href="inicio.php" class="btn btn-primary btn-lg">
+            <a href="frontend/inicio.php" class="btn btn-primary btn-lg">
                 LISTO
             </a>
         </div>
@@ -94,4 +97,4 @@ $pago = $stmt->fetch();
 
 </main>
 
-<?php require_once '../php/footer.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>

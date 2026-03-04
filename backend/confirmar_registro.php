@@ -1,7 +1,7 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-$directorio_temp = __DIR__ . '/img/temporal/';
+$directorio_temp = __DIR__ . '/../img/temporal/';
 $tiempo_maximo   = 3600; // 1 hora en segundos
 
 if (is_dir($directorio_temp)) {
@@ -11,14 +11,14 @@ if (is_dir($directorio_temp)) {
         }
     }
 }
-require_once 'header.php';
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/header.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: registro.php');
+    header('Location: ../frontend/registro.php');
     exit;
 }
 
@@ -114,11 +114,11 @@ $vencimiento = $hoy->format('Y-m-d');
 
         <footer class="confirmacion-footer">
 
-            <a href="php/cancelar_registro.php?foto=<?= $foto_temp ?>" class="btn btn-outline-danger">
+            <a href="backend/cancelar_registro.php?foto=<?= $foto_temp ?>" class="btn btn-outline-danger">
                 ❌ Cancelar
             </a>
 
-            <form action="php/cargar_usuario.php" method="POST">
+            <form action="backend/cargar_usuario.php" method="POST">
                 <input type="hidden" name="foto_temp" value="<?= $foto_temp ?>">
                 <input type="hidden" name="nombre" value="<?= htmlspecialchars($nombre) ?>">
                 <input type="hidden" name="apellido" value="<?= htmlspecialchars($apellido) ?>">
@@ -140,4 +140,4 @@ $vencimiento = $hoy->format('Y-m-d');
 
 </section>
 
-<?php require_once 'footer.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>

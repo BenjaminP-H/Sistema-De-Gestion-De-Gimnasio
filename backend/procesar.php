@@ -1,6 +1,6 @@
 <?php
-require_once '../php/session.php';
-require_once __DIR__ . '/funciones.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 $conn = conectar_db();
 
@@ -18,7 +18,7 @@ $_SESSION['intentos'][$ip] = $_SESSION['intentos'][$ip] ?? 0;
 if ($_SESSION['intentos'][$usuario] >= 5 || $_SESSION['intentos'][$ip] >= 5) {
     $_SESSION['error_login'] = 'Acceso bloqueado por demasiados intentos.';
     notificar_admin($usuario, $ip);
-    header('Location: ../index.php');
+    header('Location: ../frontend/index.php');
     exit;
 }
 
@@ -38,7 +38,7 @@ if ($user && password_verify($password, $user['password'])) {
     $_SESSION['rol'] = $user['rol'];
 
     session_regenerate_id(true);
-    header('Location: inicio.php');
+    header('Location: ../frontend/inicio.php');
     exit;
 }
 
@@ -52,5 +52,5 @@ if ($_SESSION['intentos'][$usuario] >= 5 || $_SESSION['intentos'][$ip] >= 5) {
     notificar_admin($usuario, $ip);
 }
 
-header('Location: ../index.php');
+header('Location: ../frontend/index.php');
 exit;

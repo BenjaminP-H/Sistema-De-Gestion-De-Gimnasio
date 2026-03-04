@@ -3,14 +3,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'header.php';
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/header.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: inicio.php');
+    header('Location: ../frontend/inicio.php');
     exit;
 }
 
@@ -145,11 +145,11 @@ $nuevo_vencimiento = $base->format('Y-m-d');
 
         <!-- BOTONES -->
         <div class="card-footer d-flex justify-content-between">
-            <a href="php/renovacion.php?id_cliente=<?= $id_cliente ?>" class="btn btn-outline-danger">
+            <a href="frontend/renovacion.php?id_cliente=<?= $id_cliente ?>" class="btn btn-outline-danger">
                 ❌ Cancelar
             </a>
 
-            <form action="php/procesar_renovacion.php" method="POST">
+            <form action="backend/procesar_renovacion.php" method="POST">
                 <input type="hidden" name="id_cliente" value="<?= $id_cliente ?>">
                 <input type="hidden" name="id_plan" value="<?= $id_plan ?>">
                 <input type="hidden" name="dias" value="<?= $dias ?>">
@@ -163,3 +163,5 @@ $nuevo_vencimiento = $base->format('Y-m-d');
         </div>
     </div>
 </div>
+
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>

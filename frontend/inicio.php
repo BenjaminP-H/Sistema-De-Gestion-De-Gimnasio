@@ -1,8 +1,8 @@
 <?php
 $page_class = 'inicio-page'; // Define clase para body de esta página
-require_once 'header.php';
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/header.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 $pdo = conectar_db();
@@ -62,69 +62,11 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 ?>
 
-<!-- =========================
-     NAVBAR
-========================= -->
-<nav class="navbar navbar-expand-xl navbar-dark bg-dark inicio-navbar">
-
-    <section class="container-fluid">
-
-        <header class="navbar-brand fw-bold">
-            <a href="php/inicio.php" class="text-decoration-none text-white">
-                🏋️ Gimnasio
-            </a>
-        </header>
-
-        <button class="navbar-toggler" type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#menuNavbar"
-            aria-controls="menuNavbar"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <section class="collapse navbar-collapse" id="menuNavbar">
-
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 inicio-menu">
-                <li class="nav-item">
-                    <a class="nav-link active" href="php/inicio.php">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="php/registro.php">Registrar</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="php/buscar_cliente.php">Renovar</a>
-                </li>
-            </ul>
-
-            <!-- FILTROS -->
-            <form method="get" class="d-flex filtros-navbar inicio-filtros">
-                <select name="f_estado" class="form-select form-select-sm">
-                    <option value="">Estado</option>
-                    <option value="Activo">Activo</option>
-                    <option value="Inactivo">Inactivo</option>
-                </select>
-
-                <select name="f_plan" class="form-select form-select-sm">
-                    <option value="">Plan</option>
-                    <option value="Aparatos">Aparatos</option>
-                    <option value="Funcional">Funcional</option>
-                    <option value="Zumba">Zumba</option>
-                    <option value="Pase Libre">Pase Libre</option>
-                    <option value="Día">Día</option>
-                </select>
-
-                <button class="btn btn-warning btn-sm">
-                    <i class="bi bi-funnel-fill"></i> Filtrar
-                </button>
-            </form>
-
-        </section>
-
-    </section>
-
-</nav>
+<?php
+$menu_activo = 'inicio';
+$mostrar_filtros = true;
+require_once __DIR__ . '/../reutilizable/menu.php';
+?>
 <!-- =========================
      LISTADO DE CLIENTES
 ========================= -->
@@ -198,4 +140,4 @@ $stmt->execute($params);
 
 </section>
 
-<?php require_once 'footer.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>

@@ -35,7 +35,7 @@ function conectar_db() {
 // Verificar sesión
 function verificarSesion() {
     if (!isset($_SESSION['usuario'])) {
-        header('Location: ../index.php');
+        header('Location: ../frontend/index.php');
         exit;
     }
 }

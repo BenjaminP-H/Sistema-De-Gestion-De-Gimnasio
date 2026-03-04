@@ -9,9 +9,8 @@ error_reporting(E_ALL);
 // ===============================
 // REQUIRES
 // ===============================
-require_once 'header.php';
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 // ===============================
 // SESIÓN
@@ -126,14 +125,14 @@ salida:
 <head>
     <meta charset="UTF-8">
     <title>Renovación</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script>
         let segundos = 5;
         setInterval(() => {
             document.getElementById('contador').innerText = segundos;
             segundos--;
             if (segundos < 0) {
-                window.location.href = 'php/inicio.php';
+                window.location.href = '../frontend/inicio.php';
             }
         }, 1000);
     </script>

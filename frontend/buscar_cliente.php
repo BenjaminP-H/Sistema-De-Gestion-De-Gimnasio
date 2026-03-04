@@ -1,7 +1,7 @@
 <?php
-require_once 'header.php';
-require_once 'session.php';
-require_once 'funciones.php';
+require_once __DIR__ . '/../reutilizable/header.php';
+require_once __DIR__ . '/../reutilizable/session.php';
+require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
@@ -65,7 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$menu_activo = 'renovacion';
 ?>
+
+<?php require_once __DIR__ . '/../reutilizable/menu.php'; ?>
 
 <main class="container mt-5">
 
@@ -75,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="input-group">
         <input type="text" name="dni" class="form-control" placeholder="Ingresar DNI" required>
         <button class="btn btn-dark">Buscar</button>
-        <a href="php/inicio.php" class="btn btn-secondary">Cancelar</a>
+        <a href="frontend/inicio.php" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>
 
@@ -132,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="d-grid mt-3">
-        <a href="php/renovacion.php?id_cliente=<?= $cliente['id_cliente'] ?>" class="btn btn-success">
+        <a href="frontend/renovacion.php?id_cliente=<?= $cliente['id_cliente'] ?>" class="btn btn-success">
             Renovar membresía
         </a>
     </div>
@@ -141,4 +145,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </main>
 
-<?php require_once '../php/footer.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
