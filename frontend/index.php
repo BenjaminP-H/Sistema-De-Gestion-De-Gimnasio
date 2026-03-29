@@ -1,66 +1,83 @@
 <?php
-require_once __DIR__ . '/../reutilizable/header.php';
 require_once __DIR__ . '/../reutilizable/session.php';
 require_once __DIR__ . '/../reutilizable/funciones.php';
+
+$page_class = 'ga-login-page';
 ?>
 
-<section class="login-page">
+<?php require_once __DIR__ . '/../reutilizable/header.php'; ?>
 
-    <article class="login-card">
+<main class="ga-login-main">
+    <section class="ga-login-hero">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5 col-md-7">
+                    <article class="ga-login-panel">
+                        <header class="ga-panel-header text-center">
+                            <span class="ga-kicker">Acceso seguro</span>
+                            <h3>Iniciar sesion</h3>
+                            <p>Ingresa tus credenciales para continuar.</p>
+                        </header>
 
-        <h2>Iniciar sesión</h2>
+                        <?php verificarLogueo(); ?>
 
-        <?php verificarLogueo(); ?>
+                        <form action="backend/procesar.php" method="POST" novalidate data-ga-login-form>
+                            <section class="ga-login-field">
+                                <label class="ga-label">Usuario</label>
+                                <div class="ga-input-wrap">
+                                    <i class="bi bi-person-fill"></i>
+                                    <input
+                                        type="text"
+                                        class="ga-input"
+                                        name="usuario"
+                                        placeholder="Ingresa tu usuario"
+                                        required
+                                        autocomplete="off"
+                                    >
+                                </div>
+                            </section>
 
-        <form action="backend/procesar.php" method="POST" novalidate>
+                            <section class="ga-login-field">
+                                <label class="ga-label">Contrasena</label>
+                                <div class="ga-input-wrap">
+                                    <i class="bi bi-lock-fill"></i>
+                                    <input
+                                        type="password"
+                                        class="ga-input"
+                                        name="password"
+                                        placeholder="Ingresa tu contrasena"
+                                        required
+                                    >
+                                </div>
+                            </section>
 
-            <!-- USUARIO -->
-            <section class="mb-3">
-                <label class="form-label">Usuario</label>
+                            <button type="submit" class="btn ga-btn-primary w-100" data-ga-login-btn>
+                                Ingresar
+                            </button>
+                        </form>
 
-                <section class="input-group login-input">
-                    <span class="input-group-text">
-                        <i class="bi bi-person-fill"></i>
-                    </span>
+                        <p class="ga-login-helper">Si olvidaste tus credenciales, contacta al administrador.</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
-                    <input
-                        type="text"
-                        class="form-control"
-                        name="usuario"
-                        placeholder="Ingresá tu usuario"
-                        required
-                    >
-                </section>
-            </section>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('[data-ga-login-form]');
+    if (!form) return;
 
-            <!-- CONTRASEÑA -->
-            <section class="mb-3">
-                <label class="form-label">Contraseña</label>
+    const button = form.querySelector('[data-ga-login-btn]');
 
-                <section class="input-group login-input">
-                    <span class="input-group-text">
-                        <i class="bi bi-lock-fill"></i>
-                    </span>
+    form.addEventListener('submit', () => {
+        if (!button) return;
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Ingresando...';
+    });
+});
+</script>
 
-                    <input
-                        type="password"
-                        class="form-control"
-                        name="password"
-                        placeholder="Ingresá tu contraseña"
-                        required
-                    >
-                </section>
-            </section>
+<?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
 
-            <button type="submit" class="btn btn-warning w-100 login-btn">
-                Ingresar
-            </button>
-        </form>
-
-    </article>
-
-</section>
-
-<?php
-require_once __DIR__ . '/../reutilizable/footer.php';
-?>

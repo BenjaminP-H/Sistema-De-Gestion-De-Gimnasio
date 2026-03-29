@@ -14,7 +14,7 @@ function verificarLogueo() {
 // Conexión PDO
 function conectar_db() {
     $host = 'localhost';
-    $db   = 'registrogym';
+    $db   = 'sistema_gimnasios';
     $user = 'root';
     $pass = '';
     $charset = 'utf8mb4';
@@ -63,9 +63,9 @@ function notificar_admin($usuario, $ip) {
 function obtenerPlanId(PDO $pdo, string $nombrePlan): int
 {
     $stmt = $pdo->prepare("
-        SELECT id_plan
+        SELECT id
         FROM planes
-        WHERE LOWER(nombre_plan) = LOWER(:plan)
+        WHERE LOWER(nombre) = LOWER(:plan)
         LIMIT 1
     ");
     $stmt->execute([

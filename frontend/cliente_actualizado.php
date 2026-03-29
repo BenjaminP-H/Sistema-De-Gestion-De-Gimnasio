@@ -6,8 +6,9 @@ require_once __DIR__ . '/../reutilizable/funciones.php';
 verificarSesion();
 
 $id_cliente = $_GET['id_cliente'] ?? null;
+$gymId = $_SESSION['gym_id'] ?? null;
 
-if (!$id_cliente) {
+if (!$id_cliente || $gymId === null) {
     header('Location: inicio.php');
     exit;
 }
@@ -16,26 +17,27 @@ $pdo = conectar_db();
 
 /* CLIENTE */
 $stmt = $pdo->prepare("
-    SELECT id_cliente, nombres, apellidos, dni, telefono, foto_carnet, fecha_registro
+    SELECT id, nombre, apellido, dni, telefono, fecha_alta
     FROM clientes
-    WHERE id_cliente = ?
+    WHERE id = ? AND gym_id = ?
 ");
-$stmt->execute([$id_cliente]);
+$stmt->execute([$id_cliente, $gymId]);
 $cliente = $stmt->fetch();
 
 /* ÚLTIMO PAGO */
 $stmt = $pdo->prepare("
     SELECT 
         p.fecha_pago,
-        p.dias_pagados,
-        pl.nombre_plan
+        DATEDIFF(p.fecha_vencimiento, p.fecha_pago) AS dias_pagados,
+        pl.nombre AS nombre_plan
     FROM pagos p
-    JOIN planes pl ON p.id_plan = pl.id_plan
-    WHERE p.id_cliente = ?
+    JOIN gym_planes gp ON p.gym_plan_id = gp.id
+    JOIN planes pl ON gp.plan_id = pl.id
+    WHERE p.cliente_id = ? AND p.gym_id = ?
     ORDER BY p.fecha_pago DESC
     LIMIT 1
 ");
-$stmt->execute([$id_cliente]);
+$stmt->execute([$id_cliente, $gymId]);
 $pago = $stmt->fetch();
 
 $menu_activo = 'inicio';
@@ -53,26 +55,23 @@ require_once __DIR__ . '/../reutilizable/menu.php';
 
             <!-- FOTO -->
             <div class="col-4 text-center">
-                <?php if ($cliente['foto_carnet']): ?>
-                    <img
-                        src="img/clientes/<?= htmlspecialchars($cliente['foto_carnet']) ?>"
-                        class="img-fluid rounded border"
-                        style="max-height:150px"
-                    >
-                <?php else: ?>
-                    <div class="text-muted">Sin foto</div>
-                <?php endif; ?>
+                <img
+                    src="img/clientes/sinfoto.webp"
+                    class="img-fluid rounded border"
+                    style="max-height:150px"
+                    alt="Foto cliente"
+                >
 
                 <small class="d-block mt-2">
                     <strong>Registro:</strong><br>
-                    <?= htmlspecialchars($cliente['fecha_registro']) ?>
+                    <?= htmlspecialchars($cliente['fecha_alta']) ?>
                 </small>
             </div>
 
             <!-- DATOS -->
             <div class="col-8">
                 <h4>
-                    <?= htmlspecialchars($cliente['nombres'] . ' ' . $cliente['apellidos']) ?>
+                    <?= htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellido']) ?>
                 </h4>
 
                 <p class="mb-1"><strong>DNI:</strong> <?= $cliente['dni'] ?></p>

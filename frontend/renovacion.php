@@ -1,26 +1,54 @@
 <?php
-require_once __DIR__ . '/../reutilizable/header.php';
 require_once __DIR__ . '/../reutilizable/session.php';
 require_once __DIR__ . '/../reutilizable/funciones.php';
 
 verificarSesion();
 
 $id_cliente = $_GET['id_cliente'] ?? null;
+$gymId = $_SESSION['gym_id'] ?? null;
 
-if (!$id_cliente) {
-    $_SESSION['flash_message'] = 'Cliente no válido.';
+if (!$id_cliente || $gymId === null) {
+    $_SESSION['flash_message'] = 'Cliente no valido.';
     $_SESSION['flash_type'] = 'danger';
     header('Location: inicio.php');
     exit;
 }
 
+$pdo = conectar_db();
+$stmt = $pdo->prepare("
+    SELECT id
+    FROM clientes
+    WHERE id = ? AND gym_id = ?
+    LIMIT 1
+");
+$stmt->execute([$id_cliente, $gymId]);
+if (!$stmt->fetchColumn()) {
+    $_SESSION['flash_message'] = 'Cliente no encontrado.';
+    $_SESSION['flash_type'] = 'danger';
+    header('Location: inicio.php');
+    exit;
+}
+
+$stmt = $pdo->prepare("
+    SELECT gp.id AS gym_plan_id, pl.nombre
+    FROM gym_planes gp
+    JOIN planes pl ON gp.plan_id = pl.id
+    WHERE gp.gym_id = :gym_id AND gp.activo = 1
+    ORDER BY pl.nombre
+");
+$stmt->execute([':gym_id' => $gymId]);
+$planes = $stmt->fetchAll();
+
+$page_class = 'ga-renovacion-page';
 $menu_activo = 'renovacion';
-require_once __DIR__ . '/../reutilizable/menu.php';
 ?>
+
+<?php require_once __DIR__ . '/../reutilizable/header.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/menu.php'; ?>
 
 <main class="container mt-5" style="max-width: 500px;">
 
-    <h2 class="mb-4 text-center">Renovar membresía</h2>
+    <h2 class="mb-4 text-center">Renovar membresia</h2>
 
     <!-- MENSAJE FLASH -->
     <?php if (!empty($_SESSION['flash_message'])): ?>
@@ -42,19 +70,19 @@ require_once __DIR__ . '/../reutilizable/menu.php';
         <!-- PLAN -->
         <div class="mb-3">
             <label class="form-label">Plan</label>
-            <select name="id_plan" class="form-select" required>
+            <select name="gym_plan_id" class="form-select" required>
                 <option value="">Seleccionar plan</option>
-                <option value="1">Pase libre</option>
-                <option value="2">Zumba</option>
-                <option value="3">Día</option>
-                <option value="4">Funcional</option>
-                <option value="5">Aparatos</option>
+                <?php foreach ($planes as $plan): ?>
+                    <option value="<?= (int)$plan['gym_plan_id'] ?>">
+                        <?= htmlspecialchars($plan['nombre']) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
 
-        <!-- DÍAS -->
+        <!-- DIAS -->
         <div class="mb-3">
-            <label class="form-label">Días a pagar</label>
+            <label class="form-label">Dias a pagar</label>
             <input
                 type="number"
                 name="dias"
@@ -77,9 +105,9 @@ require_once __DIR__ . '/../reutilizable/menu.php';
             >
         </div>
 
-        <!-- MÉTODO DE PAGO -->
+        <!-- METODO DE PAGO -->
         <div class="mb-3">
-            <label class="form-label">Método de pago</label>
+            <label class="form-label">Metodo de pago</label>
             <select name="metodo_pago" class="form-select" required>
                 <option value="">Seleccionar</option>
                 <option value="Efectivo">Efectivo</option>

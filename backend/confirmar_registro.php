@@ -11,7 +11,6 @@ if (is_dir($directorio_temp)) {
         }
     }
 }
-require_once __DIR__ . '/../reutilizable/header.php';
 require_once __DIR__ . '/../reutilizable/session.php';
 require_once __DIR__ . '/../reutilizable/funciones.php';
 
@@ -29,13 +28,44 @@ $nombre       = $_POST['nombre'] ?? null;
 $apellido     = $_POST['apellido'] ?? null;
 $dni          = $_POST['dni'] ?? null;
 $telefono     = $_POST['telefono'] ?? null;
-$plan         = $_POST['plan'] ?? null;
+$gym_plan_id  = $_POST['plan'] ?? null;
 $dias         = $_POST['dias'] ?? null;
 $monto        = $_POST['monto'] ?? null;
 $metodo_pago  = $_POST['metodo_pago'] ?? null;
 
-if (!$nombre || !$apellido || !$dni || !$plan || !$dias || !$monto || !$metodo_pago) {
+if (!$nombre || !$apellido || !$dni || !$gym_plan_id || !$dias || !$monto || !$metodo_pago) {
     die('Datos incompletos');
+}
+
+if (!is_numeric($dias) || (int)$dias <= 0) {
+    die('Dias invalidos');
+}
+
+if (!is_numeric($monto) || (float)$monto <= 0) {
+    die('Monto invalido');
+}
+
+$gymId = $_SESSION['gym_id'] ?? null;
+if ($gymId === null) {
+    die('Gym invalido');
+}
+
+$pdo = conectar_db();
+$stmt = $pdo->prepare("
+    SELECT pl.nombre
+    FROM gym_planes gp
+    JOIN planes pl ON gp.plan_id = pl.id
+    WHERE gp.id = :gym_plan_id AND gp.gym_id = :gym_id AND gp.activo = 1
+    LIMIT 1
+");
+$stmt->execute([
+    ':gym_plan_id' => $gym_plan_id,
+    ':gym_id' => $gymId
+]);
+$nombre_plan = $stmt->fetchColumn();
+
+if (!$nombre_plan) {
+    die('Plan no encontrado');
 }
 
 /* ===============================
@@ -69,75 +99,123 @@ if (!empty($_FILES['foto']['name']) && $_FILES['foto']['error'] === UPLOAD_ERR_O
 /* ===============================
    VENCIMIENTO VISUAL
 =============================== */
-$hoy = new DateTime();
-$hoy->modify("+$dias days");
-$vencimiento = $hoy->format('Y-m-d');
+$vencimiento = calcularNuevaFechaVencimiento(null, (int)$dias);
+
+$page_class = 'ga-confirm-page';
 ?>
 
-<section class="confirmacion-page">
+<?php require_once __DIR__ . '/../reutilizable/header.php'; ?>
+<script>window.scrollTo(0, 0);</script>
 
-    <article class="confirmacion-card card-animada">
+<main class="ga-confirm-main">
+    <section class="ga-confirm-hero">
+        <div class="container">
+            <span class="ga-kicker">Confirmacion</span>
+            <h1>Revisa antes de guardar</h1>
+            <p>
+                Este es el ultimo paso del alta. Verifica los datos personales y de pago
+                antes de confirmar el registro.
+            </p>
+            <div class="ga-hero-tags">
+                <span class="ga-chip">Plan: <?= htmlspecialchars($nombre_plan) ?></span>
+                <span class="ga-chip">Dias: <?= (int)$dias ?></span>
+                <span class="ga-chip">Monto: $<?= number_format($monto, 0, ',', '.') ?></span>
+                <span class="ga-chip">Metodo: <?= htmlspecialchars($metodo_pago) ?></span>
+            </div>
+        </div>
+    </section>
 
-        <header class="confirmacion-header">
-            Confirmar registro de cliente
-        </header>
+    <section class="container ga-confirm-shell">
+        <article class="ga-confirm-card ga-card-animada">
+            <div class="ga-confirm-grid">
+                <div class="ga-confirm-media">
+                    <?php if ($foto_temp): ?>
+                        <img src="img/temporal/<?= $foto_temp ?>" alt="Foto cliente">
+                    <?php else: ?>
+                        <div class="ga-confirm-empty">
+                            <span>Sin foto</span>
+                        </div>
+                    <?php endif; ?>
+                </div>
 
-        <section class="confirmacion-body">
+                <div class="ga-confirm-info">
+                    <h2><?= htmlspecialchars("$nombre $apellido") ?></h2>
 
-            <section class="confirmacion-foto">
-                <?php if ($foto_temp): ?>
-                    <img src="img/temporal/<?= $foto_temp ?>" alt="Foto cliente">
-                <?php else: ?>
-                    <span class="text-muted">Sin foto</span>
-                <?php endif; ?>
-            </section>
+                    <div class="ga-info-block">
+                        <div>
+                            <span>DNI</span>
+                            <strong><?= htmlspecialchars($dni) ?></strong>
+                        </div>
+                        <div>
+                            <span>Telefono</span>
+                            <strong><?= htmlspecialchars($telefono ?: '-') ?></strong>
+                        </div>
+                    </div>
 
-            <section class="confirmacion-info">
-                <h4><?= htmlspecialchars("$nombre $apellido") ?></h4>
+                    <div class="ga-summary-grid">
+                        <div>
+                            <span>Plan</span>
+                            <strong><?= htmlspecialchars($nombre_plan) ?></strong>
+                        </div>
+                        <div>
+                            <span>Dias</span>
+                            <strong><?= (int)$dias ?></strong>
+                        </div>
+                        <div>
+                            <span>Monto</span>
+                            <strong>$<?= number_format($monto, 0, ',', '.') ?></strong>
+                        </div>
+                        <div>
+                            <span>Metodo</span>
+                            <strong><?= htmlspecialchars($metodo_pago) ?></strong>
+                        </div>
+                    </div>
 
-                <p><strong>DNI:</strong> <?= htmlspecialchars($dni) ?></p>
-                <p><strong>Tel:</strong> <?= htmlspecialchars($telefono ?: '-') ?></p>
+                    <div class="ga-vencimiento">
+                        Vence el <strong><?= $vencimiento ?></strong>
+                    </div>
+                </div>
+            </div>
 
-                <hr>
+            <div class="ga-confirm-actions">
+                <a href="backend/cancelar_registro.php?foto=<?= $foto_temp ?>" class="btn ga-btn-ghost">
+                    Cancelar
+                </a>
 
-                <p><strong>Plan:</strong> <?= htmlspecialchars($plan) ?></p>
-                <p><strong>Días:</strong> <?= $dias ?></p>
-                <p><strong>Monto:</strong> $<?= number_format($monto, 0, ',', '.') ?></p>
-                <p><strong>Método:</strong> <?= htmlspecialchars($metodo_pago) ?></p>
+                <form action="backend/cargar_usuario.php" method="POST" data-ga-confirm-form>
+                    <input type="hidden" name="foto_temp" value="<?= $foto_temp ?>">
+                    <input type="hidden" name="nombre" value="<?= htmlspecialchars($nombre) ?>">
+                    <input type="hidden" name="apellido" value="<?= htmlspecialchars($apellido) ?>">
+                    <input type="hidden" name="dni" value="<?= htmlspecialchars($dni) ?>">
+                    <input type="hidden" name="telefono" value="<?= htmlspecialchars($telefono) ?>">
+                    <input type="hidden" name="plan" value="<?= (int)$gym_plan_id ?>">
+                    <input type="hidden" name="dias" value="<?= $dias ?>">
+                    <input type="hidden" name="monto" value="<?= $monto ?>">
+                    <input type="hidden" name="metodo_pago" value="<?= htmlspecialchars($metodo_pago) ?>">
 
-                <p class="vencimiento">
-                    Vence el <strong><?= $vencimiento ?></strong>
-                </p>
-            </section>
+                    <button class="btn ga-btn-primary" data-ga-confirm-btn>
+                        Confirmar registro
+                    </button>
+                </form>
+            </div>
+        </article>
+    </section>
+</main>
 
-        </section>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('[data-ga-confirm-form]');
+    if (!form) return;
 
-        <footer class="confirmacion-footer">
+    const button = form.querySelector('[data-ga-confirm-btn]');
 
-            <a href="backend/cancelar_registro.php?foto=<?= $foto_temp ?>" class="btn btn-outline-danger">
-                ❌ Cancelar
-            </a>
-
-            <form action="backend/cargar_usuario.php" method="POST">
-                <input type="hidden" name="foto_temp" value="<?= $foto_temp ?>">
-                <input type="hidden" name="nombre" value="<?= htmlspecialchars($nombre) ?>">
-                <input type="hidden" name="apellido" value="<?= htmlspecialchars($apellido) ?>">
-                <input type="hidden" name="dni" value="<?= htmlspecialchars($dni) ?>">
-                <input type="hidden" name="telefono" value="<?= htmlspecialchars($telefono) ?>">
-                <input type="hidden" name="plan" value="<?= htmlspecialchars($plan) ?>">
-                <input type="hidden" name="dias" value="<?= $dias ?>">
-                <input type="hidden" name="monto" value="<?= $monto ?>">
-                <input type="hidden" name="metodo_pago" value="<?= htmlspecialchars($metodo_pago) ?>">
-
-                <button class="btn btn-success">
-                    ✅ Confirmar registro
-                </button>
-            </form>
-
-        </footer>
-
-    </article>
-
-</section>
+    form.addEventListener('submit', () => {
+        if (!button) return;
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Confirmando...';
+    });
+});
+</script>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+

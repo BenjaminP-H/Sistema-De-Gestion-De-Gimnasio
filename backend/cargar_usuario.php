@@ -21,7 +21,7 @@ $nombre       = trim($_POST['nombre'] ?? '');
 $apellido     = trim($_POST['apellido'] ?? '');
 $dni          = trim($_POST['dni'] ?? '');
 $telefono     = trim($_POST['telefono'] ?? '');
-$plan_nombre  = trim($_POST['plan'] ?? '');
+$gym_plan_id  = (int)($_POST['plan'] ?? 0);
 $modo_pago    = trim($_POST['metodo_pago'] ?? '');
 $dias_pagados = (int)($_POST['dias'] ?? 0);
 $monto        = (float)($_POST['monto'] ?? 0);
@@ -31,8 +31,13 @@ $foto_file    = $_FILES['foto'] ?? null;
 /* ==============================
    VALIDACIÓN
 ============================== */
-if (!$nombre || !$apellido || !$dni || !$plan_nombre || $dias_pagados <= 0 || $monto <= 0) {
+if (!$nombre || !$apellido || !$dni || !$gym_plan_id || $dias_pagados <= 0 || $monto <= 0) {
     redirect_with_message('../frontend/registro.php', 'Datos obligatorios incompletos', false);
+}
+
+$gymId = $_SESSION['gym_id'] ?? null;
+if ($gymId === null) {
+    redirect_with_message('../frontend/registro.php', 'Gym inválido', false);
 }
 
 /* ==============================
@@ -82,42 +87,53 @@ try {
     $pdo = conectar_db();
     $pdo->beginTransaction();
 
-    // 🔹 Obtener ID del plan
-    $id_plan = obtenerPlanID($pdo, $plan_nombre);
-    if ($id_plan === 0) {
+    // 🔹 Verificar plan del gym
+    $stmt = $pdo->prepare("
+        SELECT id
+        FROM gym_planes
+        WHERE id = :gym_plan_id AND gym_id = :gym_id AND activo = 1
+        LIMIT 1
+    ");
+    $stmt->execute([
+        ':gym_plan_id' => $gym_plan_id,
+        ':gym_id' => $gymId
+    ]);
+    if (!$stmt->fetchColumn()) {
         throw new Exception("El plan seleccionado no existe.");
     }
 
     // 🔹 Insertar cliente
     $stmt = $pdo->prepare("
         INSERT INTO clientes 
-        (nombres, apellidos, dni, telefono, foto_carnet, fecha_registro)
+        (gym_id, nombre, apellido, dni, telefono, fecha_alta)
         VALUES 
-        (:n, :a, :dni, :tel, :foto, CURDATE())
+        (:gym_id, :n, :a, :dni, :tel, CURDATE())
     ");
     $stmt->execute([
+        ':gym_id' => $gymId,
         ':n'    => $nombre,
         ':a'    => $apellido,
         ':dni'  => $dni,
-        ':tel'  => $telefono,
-        ':foto' => $foto_path
+        ':tel'  => $telefono
     ]);
 
     $id_cliente = $pdo->lastInsertId();
 
+    $fecha_vencimiento = calcularNuevaFechaVencimiento(null, $dias_pagados);
+
     // 🔹 Insertar pago inicial
     $stmt = $pdo->prepare("
         INSERT INTO pagos
-        (id_cliente, id_plan, fecha_pago, dias_pagados, monto, modo_pago, estado)
+        (gym_id, cliente_id, gym_plan_id, monto, fecha_pago, fecha_vencimiento)
         VALUES
-        (:cliente, :plan, CURDATE(), :dias, :monto, :modo, 'Pagado')
+        (:gym_id, :cliente, :gym_plan_id, :monto, CURDATE(), :fecha_vencimiento)
     ");
     $stmt->execute([
+        ':gym_id' => $gymId,
         ':cliente' => $id_cliente,
-        ':plan'    => $id_plan,
-        ':dias'    => $dias_pagados,
+        ':gym_plan_id' => $gym_plan_id,
         ':monto'   => $monto,
-        ':modo'    => $modo_pago
+        ':fecha_vencimiento' => $fecha_vencimiento
     ]);
 
     $pdo->commit();

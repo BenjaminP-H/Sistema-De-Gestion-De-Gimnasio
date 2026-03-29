@@ -44,10 +44,12 @@ if (!$pdo) {
 // DATOS
 // ===============================
 $id_cliente  = $_POST['id_cliente'] ?? null;
-$id_plan     = $_POST['id_plan'] ?? null;
+$gym_plan_id = $_POST['gym_plan_id'] ?? null;
 $dias        = $_POST['dias'] ?? null;
 $monto       = $_POST['monto'] ?? null;
 $metodo_pago = $_POST['metodo_pago'] ?? null;
+
+$gymId = $_SESSION['gym_id'] ?? null;
 
 // ===============================
 // VALIDACIÓN
@@ -55,10 +57,11 @@ $metodo_pago = $_POST['metodo_pago'] ?? null;
 $errores = [];
 
 if (!$id_cliente)        $errores[] = 'Cliente inválido';
-if (!$id_plan)           $errores[] = 'Plan inválido';
+if (!$gym_plan_id)       $errores[] = 'Plan inválido';
 if (!is_numeric($dias))  $errores[] = 'Días inválidos';
 if (!is_numeric($monto)) $errores[] = 'Monto inválido';
 if (!$metodo_pago)       $errores[] = 'Método de pago faltante';
+if ($gymId === null)     $errores[] = 'Gym inválido';
 
 if ($errores) {
     $mensaje = implode('<br>', $errores);
@@ -71,36 +74,55 @@ if ($errores) {
 try {
     $pdo->beginTransaction();
 
+    // Validar cliente del gym
+    $stmt = $pdo->prepare("
+        SELECT id
+        FROM clientes
+        WHERE id = ? AND gym_id = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$id_cliente, $gymId]);
+    if (!$stmt->fetchColumn()) {
+        throw new Exception('Cliente inválido');
+    }
+
+    // Validar plan del gym
+    $stmt = $pdo->prepare("
+        SELECT id
+        FROM gym_planes
+        WHERE id = ? AND gym_id = ? AND activo = 1
+        LIMIT 1
+    ");
+    $stmt->execute([$gym_plan_id, $gymId]);
+    if (!$stmt->fetchColumn()) {
+        throw new Exception('Plan inválido');
+    }
+
     // Último vencimiento
     $stmt = $pdo->prepare("
-        SELECT DATE_ADD(fecha_pago, INTERVAL dias_pagados DAY)
+        SELECT fecha_vencimiento
         FROM pagos
-        WHERE id_cliente = ?
+        WHERE cliente_id = ? AND gym_id = ?
         ORDER BY fecha_pago DESC
         LIMIT 1
     ");
-    $stmt->execute([$id_cliente]);
+    $stmt->execute([$id_cliente, $gymId]);
     $fecha_actual = $stmt->fetchColumn();
 
-    $hoy = new DateTime();
-    $base = ($fecha_actual && new DateTime($fecha_actual) > $hoy)
-        ? new DateTime($fecha_actual)
-        : clone $hoy;
-
-    $base->modify("+$dias days");
+    $fecha_vencimiento = calcularNuevaFechaVencimiento($fecha_actual, (int)$dias);
 
     // Insertar pago
     $stmt = $pdo->prepare("
         INSERT INTO pagos
-        (id_cliente, id_plan, monto, modo_pago, dias_pagados, fecha_pago)
-        VALUES (?, ?, ?, ?, ?, NOW())
+        (gym_id, cliente_id, gym_plan_id, monto, fecha_pago, fecha_vencimiento)
+        VALUES (?, ?, ?, ?, CURDATE(), ?)
     ");
     $stmt->execute([
+        $gymId,
         $id_cliente,
-        $id_plan,
+        $gym_plan_id,
         $monto,
-        $metodo_pago,
-        $dias
+        $fecha_vencimiento
     ]);
 
     $pdo->commit();

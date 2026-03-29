@@ -22,7 +22,7 @@ if ($_SESSION['intentos'][$usuario] >= 5 || $_SESSION['intentos'][$ip] >= 5) {
     exit;
 }
 
-$sql = "SELECT id_usuario, usuario, password, rol FROM usuarios WHERE usuario = :usuario";
+$sql = "SELECT id, usuario, password, rol, gym_id FROM usuarios WHERE usuario = :usuario";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
 $stmt->execute();
@@ -36,6 +36,7 @@ if ($user && password_verify($password, $user['password'])) {
 
     $_SESSION['usuario'] = $user['usuario'];
     $_SESSION['rol'] = $user['rol'];
+    $_SESSION['gym_id'] = $user['gym_id'];
 
     session_regenerate_id(true);
     header('Location: ../frontend/inicio.php');

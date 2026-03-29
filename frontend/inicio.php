@@ -1,6 +1,4 @@
 <?php
-$page_class = 'inicio-page'; // Define clase para body de esta página
-require_once __DIR__ . '/../reutilizable/header.php';
 require_once __DIR__ . '/../reutilizable/session.php';
 require_once __DIR__ . '/../reutilizable/funciones.php';
 
@@ -13,17 +11,25 @@ $pdo = conectar_db();
 $where = [];
 $params = [];
 
+$gymId = $_SESSION['gym_id'] ?? null;
+$where[] = "c.gym_id = :gym_id";
+$params[':gym_id'] = $gymId;
+
 if (!empty($_GET['f_estado'])) {
     if ($_GET['f_estado'] === 'Activo') {
-        $where[] = "p.id_pago IS NOT NULL";
+        $where[] = "p.id IS NOT NULL";
     } elseif ($_GET['f_estado'] === 'Inactivo') {
-        $where[] = "p.id_pago IS NULL";
+        $where[] = "p.id IS NULL";
     }
 }
 
 if (!empty($_GET['f_plan'])) {
-    $where[] = "pl.nombre_plan = :plan";
-    $params[':plan'] = $_GET['f_plan'];
+    $plan = $_GET['f_plan'];
+    if ($plan === 'Dia') {
+        $plan = html_entity_decode('D&iacute;a', ENT_QUOTES, 'UTF-8');
+    }
+    $where[] = "pl.nombre = :plan";
+    $params[':plan'] = $plan;
 }
 
 /* =========================
@@ -31,113 +37,176 @@ if (!empty($_GET['f_plan'])) {
 ========================= */
 $sql = "
 SELECT 
-    c.id_cliente,
-    c.nombres,
-    c.apellidos,
+    c.id,
+    c.nombre,
+    c.apellido,
     c.dni,
-    c.foto_carnet,
-    p.dias_pagados,
+    NULL AS foto_carnet,
+    DATEDIFF(p.fecha_vencimiento, p.fecha_pago) AS dias_pagados,
     p.fecha_pago,
-    pl.nombre_plan,
-    DATE_ADD(p.fecha_pago, INTERVAL p.dias_pagados DAY) AS fecha_vencimiento
+    pl.nombre AS nombre_plan,
+    p.fecha_vencimiento
 FROM clientes c
 LEFT JOIN pagos p 
-    ON p.id_pago = (
-        SELECT p2.id_pago
+    ON p.id = (
+        SELECT p2.id
         FROM pagos p2
-        WHERE p2.id_cliente = c.id_cliente
+        WHERE p2.cliente_id = c.id
+          AND p2.gym_id = :gym_id
         ORDER BY p2.fecha_pago DESC
         LIMIT 1
     )
-LEFT JOIN planes pl ON p.id_plan = pl.id_plan
+LEFT JOIN gym_planes gp ON p.gym_plan_id = gp.id
+LEFT JOIN planes pl ON gp.plan_id = pl.id
 ";
 
 if ($where) {
     $sql .= " WHERE " . implode(" AND ", $where);
 }
 
-$sql .= " ORDER BY c.id_cliente DESC";
+$sql .= " ORDER BY c.id DESC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-?>
+$clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-<?php
+$hoy = date('Y-m-d');
+$total_clientes = count($clientes);
+$activos = 0;
+$inactivos = 0;
+
+foreach ($clientes as $row) {
+    $activo = !empty($row['fecha_vencimiento']) && $row['fecha_vencimiento'] >= $hoy;
+    if ($activo) {
+        $activos++;
+    } else {
+        $inactivos++;
+    }
+}
+
+$page_class = 'ga-inicio-page';
 $menu_activo = 'inicio';
 $mostrar_filtros = true;
-require_once __DIR__ . '/../reutilizable/menu.php';
 ?>
-<!-- =========================
-     LISTADO DE CLIENTES
-========================= -->
-<section class="container mt-4 inicio-page">
 
-    <header class="mb-3">
-        <h3 class="text-warning fw-bold">Clientes registrados</h3>
-    </header>
+<?php require_once __DIR__ . '/../reutilizable/header.php'; ?>
+<?php require_once __DIR__ . '/../reutilizable/menu.php'; ?>
 
-    <article class="table-responsive inicio-tabla shadow-sm rounded-4">
+<main class="ga-inicio-main">
+    <section class="ga-inicio-hero">
+        <div class="container">
+            <div class="row align-items-center gy-4">
+                <div class="col-lg-6">
+                    <span class="ga-kicker">Panel operativo</span>
+                    <h1 class="ga-hero-title">Control total de tus clientes</h1>
+                    <p class="ga-hero-sub">
+                        Visualiza estados, planes y vencimientos al instante. Usa los filtros
+                        del menu para afinar el listado y actuar rapido.
+                    </p>
+                </div>
 
-        <table class="table table-dark table-hover align-middle text-center mb-0">
-            <thead>
-                <tr>
-                    <th>Foto</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Estado</th>
-                    <th>Días</th>
-                    <th>Último pago</th>
-                    <th>Plan</th>
-                    <th>Vencimiento</th>
-                </tr>
-            </thead>
+                <div class="col-lg-6">
+                    <div class="ga-inicio-stats">
+                        <div class="ga-stat-card">
+                            <span class="ga-stat-label">Clientes totales</span>
+                            <span class="ga-stat-value"><?= $total_clientes ?></span>
+                        </div>
+                        <div class="ga-stat-card">
+                            <span class="ga-stat-label">Activos</span>
+                            <span class="ga-stat-value"><?= $activos ?></span>
+                        </div>
+                        <div class="ga-stat-card">
+                            <span class="ga-stat-label">Inactivos</span>
+                            <span class="ga-stat-value"><?= $inactivos ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <tbody>
-            <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+    <section class="container ga-inicio-table-section">
+        <div class="ga-inicio-table-header">
+            <div>
+                <p class="ga-result-eyebrow">Listado</p>
+                <h3>Clientes registrados</h3>
+            </div>
+            <div class="ga-inicio-summary">
+                <span class="ga-summary-pill">Activos: <?= $activos ?></span>
+                <span class="ga-summary-pill">Inactivos: <?= $inactivos ?></span>
+            </div>
+        </div>
 
-                <?php
-                    $hoy = date('Y-m-d');
-                    $activo = !empty($row['fecha_vencimiento']) && $row['fecha_vencimiento'] >= $hoy;
+        <div class="ga-inicio-table-card">
+            <?php if (empty($clientes)): ?>
+                <div class="ga-empty">
+                    <h4>No hay clientes para mostrar</h4>
+                    <p>Registra un cliente nuevo o ajusta los filtros del menu.</p>
+                    <a href="frontend/registro.php" class="btn ga-btn-primary">Registrar cliente</a>
+                </div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 ga-table">
+                        <thead>
+                            <tr>
+                                <th>Foto</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>DNI</th>
+                                <th>Estado</th>
+                                <th>Dias</th>
+                                <th>Ultimo pago</th>
+                                <th>Plan</th>
+                                <th>Vencimiento</th>
+                            </tr>
+                        </thead>
 
-                    $estado = $activo ? 'Activo' : 'Inactivo';
-                    $class  = $activo ? 'badge bg-success' : 'badge bg-danger';
-                ?>
+                        <tbody>
+                        <?php foreach ($clientes as $row) { ?>
 
-                <tr class="<?= $activo ? '' : 'cliente-inactivo' ?>">
-                    <td>
-                        <img
-                            src="img/clientes/<?= htmlspecialchars($row['foto_carnet'] ?: 'sinfoto.webp') ?>"
-                            alt="Foto cliente"
-                            class="cliente-foto"
-                        >
-                    </td>
+                            <?php
+                                $activo = !empty($row['fecha_vencimiento']) && $row['fecha_vencimiento'] >= $hoy;
+                                $estado = $activo ? 'Activo' : 'Inactivo';
+                                $status_class  = $activo ? 'ga-status ga-status-ok' : 'ga-status ga-status-warn';
+                            ?>
 
-                    <td><?= htmlspecialchars($row['nombres']) ?></td>
-                    <td><?= htmlspecialchars($row['apellidos']) ?></td>
-                    <td><?= htmlspecialchars($row['dni']) ?></td>
+                            <tr class="<?= $activo ? '' : 'ga-row-muted' ?>">
+                                <td>
+                                    <img
+                                        src="img/clientes/<?= htmlspecialchars($row['foto_carnet'] ?: 'sinfoto.webp') ?>"
+                                        alt="Foto cliente"
+                                        class="cliente-foto"
+                                    >
+                                </td>
 
-                    <td>
-                        <span class="<?= $class ?> px-3 py-2">
-                            <?= $estado ?>
-                        </span>
-                    </td>
+                                <td><?= htmlspecialchars($row['nombre']) ?></td>
+                                <td><?= htmlspecialchars($row['apellido']) ?></td>
+                                <td><?= htmlspecialchars($row['dni']) ?></td>
 
-                    <td><?= $row['dias_pagados'] ?? '-' ?></td>
-                    <td><?= $row['fecha_pago'] ?? '-' ?></td>
-                    <td><?= $row['nombre_plan'] ?? '-' ?></td>
+                                <td>
+                                    <span class="<?= $status_class ?>">
+                                        <?= $estado ?>
+                                    </span>
+                                </td>
 
-                    <td class="<?= $activo ? 'text-success' : 'text-danger fw-bold' ?>">
-                        <?= $row['fecha_vencimiento'] ?? 'Sin pago' ?>
-                    </td>
-                </tr>
+                                <td><?= $row['dias_pagados'] ?? '-' ?></td>
+                                <td><?= $row['fecha_pago'] ?? '-' ?></td>
+                                <td><?= $row['nombre_plan'] ?? '-' ?></td>
 
-            <?php } ?>
-            </tbody>
-        </table>
+                                <td class="<?= $activo ? 'text-success' : 'text-danger fw-bold' ?>">
+                                    <?= $row['fecha_vencimiento'] ?? 'Sin pago' ?>
+                                </td>
+                            </tr>
 
-    </article>
-
-</section>
+                        <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+</main>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
+

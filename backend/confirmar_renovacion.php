@@ -3,7 +3,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/../reutilizable/header.php';
 require_once __DIR__ . '/../reutilizable/session.php';
 require_once __DIR__ . '/../reutilizable/funciones.php';
 
@@ -17,20 +16,30 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $pdo = conectar_db();
 
 $id_cliente  = $_POST['id_cliente'] ?? null;
-$id_plan     = $_POST['id_plan'] ?? null;
+$gym_plan_id = $_POST['gym_plan_id'] ?? null;
 $dias        = $_POST['dias'] ?? null;
 $monto       = $_POST['monto'] ?? null;
 $metodo_pago = $_POST['metodo_pago'] ?? null;
 
-if (!$id_cliente || !$id_plan || !$dias || !$monto || !$metodo_pago) {
+if (!$id_cliente || !$gym_plan_id || !$dias || !$monto || !$metodo_pago) {
     die('Datos incompletos');
+}
+
+$gymId = $_SESSION['gym_id'] ?? null;
+if ($gymId === null) {
+    die('Gym invalido');
 }
 
 /* ===============================
    CLIENTE
 =============================== */
-$stmt = $pdo->prepare("SELECT * FROM clientes WHERE id_cliente = ?");
-$stmt->execute([$id_cliente]);
+$stmt = $pdo->prepare("
+    SELECT id, nombre, apellido, dni, telefono
+    FROM clientes
+    WHERE id = ? AND gym_id = ?
+    LIMIT 1
+");
+$stmt->execute([$id_cliente, $gymId]);
 $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$cliente) {
@@ -41,12 +50,13 @@ if (!$cliente) {
    PLAN
 =============================== */
 $stmt = $pdo->prepare("
-    SELECT nombre_plan
-    FROM planes
-    WHERE id_plan = ?
+    SELECT pl.nombre
+    FROM gym_planes gp
+    JOIN planes pl ON gp.plan_id = pl.id
+    WHERE gp.id = ? AND gp.gym_id = ? AND gp.activo = 1
     LIMIT 1
 ");
-$stmt->execute([$id_plan]);
+$stmt->execute([$gym_plan_id, $gymId]);
 $nombre_plan = $stmt->fetchColumn();
 
 if (!$nombre_plan) {
@@ -54,114 +64,147 @@ if (!$nombre_plan) {
 }
 
 /* ===============================
-   ÚLTIMO PAGO
+   ULTIMO PAGO
 =============================== */
 $stmt = $pdo->prepare("
-    SELECT *
+    SELECT fecha_vencimiento
     FROM pagos
-    WHERE id_cliente = ?
+    WHERE cliente_id = ? AND gym_id = ?
     ORDER BY fecha_pago DESC
     LIMIT 1
 ");
-$stmt->execute([$id_cliente]);
+$stmt->execute([$id_cliente, $gymId]);
 $pago = $stmt->fetch(PDO::FETCH_ASSOC);
 
 /* ===============================
    NUEVO VENCIMIENTO (VISUAL)
 =============================== */
-$hoy = new DateTime();
+$fecha_actual = $pago['fecha_vencimiento'] ?? null;
+$hoy = date('Y-m-d');
 
-if ($pago) {
-    $venc = new DateTime($pago['fecha_pago']);
-    $venc->modify("+{$pago['dias_pagados']} days");
-
-    if ($venc >= $hoy) {
-        $base = clone $venc;
-        $estado = 'Activo';
-        $badge = 'bg-success';
-    } else {
-        $base = clone $hoy;
-        $estado = 'Vencido';
-        $badge = 'bg-danger';
-    }
+if ($fecha_actual && $fecha_actual >= $hoy) {
+    $estado = 'Activo';
+    $badge = 'ga-status-ok';
+} elseif ($fecha_actual) {
+    $estado = 'Vencido';
+    $badge = 'ga-status-warn';
 } else {
-    $base = clone $hoy;
     $estado = 'Sin pagos';
-    $badge = 'bg-secondary';
+    $badge = 'ga-status-muted';
 }
 
-$base->modify("+$dias days");
-$nuevo_vencimiento = $base->format('Y-m-d');
+$nuevo_vencimiento = calcularNuevaFechaVencimiento($fecha_actual, (int)$dias);
+
+$page_class = 'ga-confirm-page';
 ?>
 
-<div class="container mt-5 d-flex justify-content-center">
-    <div class="card shadow-lg border-0" style="max-width:720px;width:100%;">
-        <div class="card-header bg-dark text-warning text-center fw-bold">
-            Confirmar renovación de membresía
-        </div>
+<?php require_once __DIR__ . '/../reutilizable/header.php'; ?>
+<script>window.scrollTo(0, 0);</script>
 
-        <div class="card-body">
-            <div class="row g-4 align-items-center">
-
-                <!-- FOTO -->
-                <div class="col-md-4 text-center">
-                    <?php if ($cliente['foto_carnet']): ?>
-                        <img src="img/clientes/<?= htmlspecialchars($cliente['foto_carnet']) ?>"
-                             class="img-fluid rounded shadow-sm"
-                             style="max-height:150px;">
-                    <?php else: ?>
-                        <div class="text-muted">Sin foto</div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- INFO -->
-                <div class="col-md-8">
-                    <h5 class="mb-2">
-                        <?= htmlspecialchars($cliente['nombres'].' '.$cliente['apellidos']) ?>
-                    </h5>
-
-                    <p class="mb-1"><strong>DNI:</strong> <?= $cliente['dni'] ?></p>
-                    <p class="mb-1"><strong>Tel:</strong> <?= $cliente['telefono'] ?></p>
-
-                    <p class="mb-2">
-                        <strong>Estado actual:</strong>
-                        <span class="badge <?= $badge ?>"><?= $estado ?></span>
-                    </p>
-
-                    <hr>
-
-                    <p class="mb-1"><strong>Plan seleccionado:</strong> <?= htmlspecialchars($nombre_plan) ?></p>
-                    <p class="mb-1"><strong>Días a agregar:</strong> <?= $dias ?></p>
-                    <p class="mb-1"><strong>Monto:</strong> $<?= number_format($monto, 0, ',', '.') ?></p>
-                    <p class="mb-1"><strong>Método de pago:</strong> <?= htmlspecialchars($metodo_pago) ?></p>
-
-                    <p class="mt-2">
-                        <strong>Nuevo vencimiento:</strong>
-                        <span class="text-primary fw-bold"><?= $nuevo_vencimiento ?></span>
-                    </p>
-                </div>
+<main class="ga-confirm-main">
+    <section class="ga-confirm-hero">
+        <div class="container">
+            <span class="ga-kicker">Confirmacion</span>
+            <h1>Renovacion de membresia</h1>
+            <p>
+                Revisa el plan seleccionado, el monto y la nueva fecha de vencimiento
+                antes de confirmar el pago.
+            </p>
+            <div class="ga-hero-tags">
+                <span class="ga-chip">Plan: <?= htmlspecialchars($nombre_plan) ?></span>
+                <span class="ga-chip">Dias: <?= (int)$dias ?></span>
+                <span class="ga-chip">Monto: $<?= number_format($monto, 0, ',', '.') ?></span>
+                <span class="ga-chip">Metodo: <?= htmlspecialchars($metodo_pago) ?></span>
             </div>
         </div>
+    </section>
 
-        <!-- BOTONES -->
-        <div class="card-footer d-flex justify-content-between">
-            <a href="frontend/renovacion.php?id_cliente=<?= $id_cliente ?>" class="btn btn-outline-danger">
-                ❌ Cancelar
-            </a>
+    <section class="container ga-confirm-shell">
+        <article class="ga-confirm-card ga-card-animada">
+            <div class="ga-confirm-grid">
+                <div class="ga-confirm-media">
+                    <img src="img/clientes/sinfoto.webp" alt="Foto cliente">
+                </div>
 
-            <form action="backend/procesar_renovacion.php" method="POST">
-                <input type="hidden" name="id_cliente" value="<?= $id_cliente ?>">
-                <input type="hidden" name="id_plan" value="<?= $id_plan ?>">
-                <input type="hidden" name="dias" value="<?= $dias ?>">
-                <input type="hidden" name="monto" value="<?= $monto ?>">
-                <input type="hidden" name="metodo_pago" value="<?= htmlspecialchars($metodo_pago) ?>">
+                <div class="ga-confirm-info">
+                    <div class="ga-confirm-top">
+                        <h2><?= htmlspecialchars($cliente['nombre'].' '.$cliente['apellido']) ?></h2>
+                        <span class="ga-status <?= $badge ?>">
+                            <?= $estado ?>
+                        </span>
+                    </div>
 
-                <button type="submit" class="btn btn-success">
-                    ✅ Confirmar renovación
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
+                    <div class="ga-info-block">
+                        <div>
+                            <span>DNI</span>
+                            <strong><?= htmlspecialchars($cliente['dni']) ?></strong>
+                        </div>
+                        <div>
+                            <span>Telefono</span>
+                            <strong><?= htmlspecialchars($cliente['telefono'] ?: '-') ?></strong>
+                        </div>
+                    </div>
+
+                    <div class="ga-summary-grid">
+                        <div>
+                            <span>Plan</span>
+                            <strong><?= htmlspecialchars($nombre_plan) ?></strong>
+                        </div>
+                        <div>
+                            <span>Dias a agregar</span>
+                            <strong><?= (int)$dias ?></strong>
+                        </div>
+                        <div>
+                            <span>Monto</span>
+                            <strong>$<?= number_format($monto, 0, ',', '.') ?></strong>
+                        </div>
+                        <div>
+                            <span>Metodo</span>
+                            <strong><?= htmlspecialchars($metodo_pago) ?></strong>
+                        </div>
+                    </div>
+
+                    <div class="ga-vencimiento">
+                        Nuevo vencimiento: <strong><?= $nuevo_vencimiento ?></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ga-confirm-actions">
+                <a href="frontend/renovacion.php?id_cliente=<?= $id_cliente ?>" class="btn ga-btn-ghost">
+                    Cancelar
+                </a>
+
+                <form action="backend/procesar_renovacion.php" method="POST" data-ga-confirm-form>
+                    <input type="hidden" name="id_cliente" value="<?= $id_cliente ?>">
+                    <input type="hidden" name="gym_plan_id" value="<?= (int)$gym_plan_id ?>">
+                    <input type="hidden" name="dias" value="<?= $dias ?>">
+                    <input type="hidden" name="monto" value="<?= $monto ?>">
+                    <input type="hidden" name="metodo_pago" value="<?= htmlspecialchars($metodo_pago) ?>">
+
+                    <button type="submit" class="btn ga-btn-primary" data-ga-confirm-btn>
+                        Confirmar renovacion
+                    </button>
+                </form>
+            </div>
+        </article>
+    </section>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('[data-ga-confirm-form]');
+    if (!form) return;
+
+    const button = form.querySelector('[data-ga-confirm-btn]');
+
+    form.addEventListener('submit', () => {
+        if (!button) return;
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Confirmando...';
+    });
+});
+</script>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
