@@ -103,74 +103,74 @@ $page_class = 'ga-confirm-page';
 
 <main class="ga-confirm-main">
     <section class="ga-confirm-hero">
-        <div class="container">
+        <section class="container">
             <span class="ga-kicker">Confirmacion</span>
             <h1>Renovacion de membresia</h1>
             <p>
                 Revisa el plan seleccionado, el monto y la nueva fecha de vencimiento
                 antes de confirmar el pago.
             </p>
-            <div class="ga-hero-tags">
+            <section class="ga-hero-tags">
                 <span class="ga-chip">Plan: <?= htmlspecialchars($nombre_plan) ?></span>
                 <span class="ga-chip">Dias: <?= (int)$dias ?></span>
                 <span class="ga-chip">Monto: $<?= number_format($monto, 0, ',', '.') ?></span>
                 <span class="ga-chip">Metodo: <?= htmlspecialchars($metodo_pago) ?></span>
-            </div>
-        </div>
+            </section>
+        </section>
     </section>
 
     <section class="container ga-confirm-shell">
         <article class="ga-confirm-card ga-card-animada">
-            <div class="ga-confirm-grid">
-                <div class="ga-confirm-media">
+            <section class="ga-confirm-grid">
+                <section class="ga-confirm-media">
                     <img src="img/clientes/sinfoto.webp" alt="Foto cliente">
-                </div>
+                </section>
 
-                <div class="ga-confirm-info">
-                    <div class="ga-confirm-top">
+                <section class="ga-confirm-info">
+                    <section class="ga-confirm-top">
                         <h2><?= htmlspecialchars($cliente['nombre'].' '.$cliente['apellido']) ?></h2>
                         <span class="ga-status <?= $badge ?>">
                             <?= $estado ?>
                         </span>
-                    </div>
+                    </section>
 
-                    <div class="ga-info-block">
-                        <div>
+                    <section class="ga-info-block">
+                        <section>
                             <span>DNI</span>
                             <strong><?= htmlspecialchars($cliente['dni']) ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Telefono</span>
                             <strong><?= htmlspecialchars($cliente['telefono'] ?: '-') ?></strong>
-                        </div>
-                    </div>
+                        </section>
+                    </section>
 
-                    <div class="ga-summary-grid">
-                        <div>
+                    <section class="ga-summary-grid">
+                        <section>
                             <span>Plan</span>
                             <strong><?= htmlspecialchars($nombre_plan) ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Dias a agregar</span>
                             <strong><?= (int)$dias ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Monto</span>
                             <strong>$<?= number_format($monto, 0, ',', '.') ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Metodo</span>
                             <strong><?= htmlspecialchars($metodo_pago) ?></strong>
-                        </div>
-                    </div>
+                        </section>
+                    </section>
 
-                    <div class="ga-vencimiento">
+                    <section class="ga-vencimiento">
                         Nuevo vencimiento: <strong><?= $nuevo_vencimiento ?></strong>
-                    </div>
-                </div>
-            </div>
+                    </section>
+                </section>
+            </section>
 
-            <div class="ga-confirm-actions">
+            <section class="ga-confirm-actions">
                 <a href="frontend/renovacion.php?id_cliente=<?= $id_cliente ?>" class="btn ga-btn-ghost">
                     Cancelar
                 </a>
@@ -186,7 +186,7 @@ $page_class = 'ga-confirm-page';
                         Confirmar renovacion
                     </button>
                 </form>
-            </div>
+            </section>
         </article>
     </section>
 </main>
@@ -207,4 +207,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
 

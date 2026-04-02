@@ -109,75 +109,75 @@ $page_class = 'ga-confirm-page';
 
 <main class="ga-confirm-main">
     <section class="ga-confirm-hero">
-        <div class="container">
+        <section class="container">
             <span class="ga-kicker">Confirmacion</span>
             <h1>Revisa antes de guardar</h1>
             <p>
                 Este es el ultimo paso del alta. Verifica los datos personales y de pago
                 antes de confirmar el registro.
             </p>
-            <div class="ga-hero-tags">
+            <section class="ga-hero-tags">
                 <span class="ga-chip">Plan: <?= htmlspecialchars($nombre_plan) ?></span>
                 <span class="ga-chip">Dias: <?= (int)$dias ?></span>
                 <span class="ga-chip">Monto: $<?= number_format($monto, 0, ',', '.') ?></span>
                 <span class="ga-chip">Metodo: <?= htmlspecialchars($metodo_pago) ?></span>
-            </div>
-        </div>
+            </section>
+        </section>
     </section>
 
     <section class="container ga-confirm-shell">
         <article class="ga-confirm-card ga-card-animada">
-            <div class="ga-confirm-grid">
-                <div class="ga-confirm-media">
+            <section class="ga-confirm-grid">
+                <section class="ga-confirm-media">
                     <?php if ($foto_temp): ?>
                         <img src="img/temporal/<?= $foto_temp ?>" alt="Foto cliente">
                     <?php else: ?>
-                        <div class="ga-confirm-empty">
+                        <section class="ga-confirm-empty">
                             <span>Sin foto</span>
-                        </div>
+                        </section>
                     <?php endif; ?>
-                </div>
+                </section>
 
-                <div class="ga-confirm-info">
+                <section class="ga-confirm-info">
                     <h2><?= htmlspecialchars("$nombre $apellido") ?></h2>
 
-                    <div class="ga-info-block">
-                        <div>
+                    <section class="ga-info-block">
+                        <section>
                             <span>DNI</span>
                             <strong><?= htmlspecialchars($dni) ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Telefono</span>
                             <strong><?= htmlspecialchars($telefono ?: '-') ?></strong>
-                        </div>
-                    </div>
+                        </section>
+                    </section>
 
-                    <div class="ga-summary-grid">
-                        <div>
+                    <section class="ga-summary-grid">
+                        <section>
                             <span>Plan</span>
                             <strong><?= htmlspecialchars($nombre_plan) ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Dias</span>
                             <strong><?= (int)$dias ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Monto</span>
                             <strong>$<?= number_format($monto, 0, ',', '.') ?></strong>
-                        </div>
-                        <div>
+                        </section>
+                        <section>
                             <span>Metodo</span>
                             <strong><?= htmlspecialchars($metodo_pago) ?></strong>
-                        </div>
-                    </div>
+                        </section>
+                    </section>
 
-                    <div class="ga-vencimiento">
+                    <section class="ga-vencimiento">
                         Vence el <strong><?= $vencimiento ?></strong>
-                    </div>
-                </div>
-            </div>
+                    </section>
+                </section>
+            </section>
 
-            <div class="ga-confirm-actions">
+            <section class="ga-confirm-actions">
                 <a href="backend/cancelar_registro.php?foto=<?= $foto_temp ?>" class="btn ga-btn-ghost">
                     Cancelar
                 </a>
@@ -197,7 +197,7 @@ $page_class = 'ga-confirm-page';
                         Confirmar registro
                     </button>
                 </form>
-            </div>
+            </section>
         </article>
     </section>
 </main>
@@ -218,4 +218,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
 

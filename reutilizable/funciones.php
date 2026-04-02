@@ -6,7 +6,7 @@
 // Mostrar errores de login
 function verificarLogueo() {
     if (isset($_SESSION['error_login'])) {
-        echo '<div class="alert alert-danger">'.$_SESSION['error_login'].'</div>';
+        echo '<section class="alert alert-danger">'.$_SESSION['error_login'].'</section>';
         unset($_SESSION['error_login']);
     }
 }
@@ -100,3 +100,4 @@ function calcularNuevaFechaVencimiento($fecha_vencimiento_actual, $dias_nuevos) 
         strtotime($hoy . " +$dias_nuevos days")
     );
 }
+

@@ -49,12 +49,12 @@ require_once __DIR__ . '/../reutilizable/menu.php';
 
     <h2 class="mb-4 text-success">Membresía renovada</h2>
 
-    <div class="card shadow p-4" style="max-width: 600px;">
+    <section class="card shadow p-4" style="max-width: 600px;">
 
-        <div class="row align-items-center">
+        <section class="row align-items-center">
 
             <!-- FOTO -->
-            <div class="col-4 text-center">
+            <section class="col-4 text-center">
                 <img
                     src="img/clientes/sinfoto.webp"
                     class="img-fluid rounded border"
@@ -66,10 +66,10 @@ require_once __DIR__ . '/../reutilizable/menu.php';
                     <strong>Registro:</strong><br>
                     <?= htmlspecialchars($cliente['fecha_alta']) ?>
                 </small>
-            </div>
+            </section>
 
             <!-- DATOS -->
-            <div class="col-8">
+            <section class="col-8">
                 <h4>
                     <?= htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellido']) ?>
                 </h4>
@@ -82,18 +82,19 @@ require_once __DIR__ . '/../reutilizable/menu.php';
                     <p class="mb-1"><strong>Días pagados:</strong> <?= $pago['dias_pagados'] ?></p>
                     <p class="mb-1"><strong>Último pago:</strong> <?= $pago['fecha_pago'] ?></p>
                 <?php endif; ?>
-            </div>
+            </section>
 
-        </div>
+        </section>
 
-        <div class="d-grid mt-4">
+        <section class="d-grid mt-4">
             <a href="frontend/inicio.php" class="btn btn-primary btn-lg">
                 LISTO
             </a>
-        </div>
+        </section>
 
-    </div>
+    </section>
 
 </main>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+

@@ -30,9 +30,9 @@ $page_class = 'ga-register-page';
 
 <main class="ga-register-main">
     <section class="ga-register-hero">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-7 col-md-10">
+        <section class="container">
+            <section class="row justify-content-center">
+                <section class="col-lg-7 col-md-10">
                     <article class="ga-register-panel">
                         <header class="ga-panel-header text-center">
                             <span class="ga-kicker">Alta de clientes</span>
@@ -49,12 +49,12 @@ $page_class = 'ga-register-page';
 
                         <form action="backend/confirmar_registro.php" method="POST" enctype="multipart/form-data" data-ga-register-form>
                             <section class="ga-form-section">
-                                <div class="ga-section-title">
+                                <section class="ga-section-title">
                                     <h5>Datos personales</h5>
                                     <span class="ga-section-chip">Paso 1</span>
-                                </div>
+                                </section>
 
-                                <div class="row g-3">
+                                <section class="row g-3">
                                     <article class="col-md-6">
                                         <label class="form-label">Nombre</label>
                                         <input type="text" name="nombre" class="form-control" required autocomplete="off">
@@ -79,16 +79,16 @@ $page_class = 'ga-register-page';
                                         <label class="form-label">Foto carnet (opcional)</label>
                                         <input type="file" name="foto" class="form-control" accept="image/*">
                                     </article>
-                                </div>
+                                </section>
                             </section>
 
                             <section class="ga-form-section">
-                                <div class="ga-section-title">
+                                <section class="ga-section-title">
                                     <h5>Datos de membresia</h5>
                                     <span class="ga-section-chip">Paso 2</span>
-                                </div>
+                                </section>
 
-                                <div class="row g-3">
+                                <section class="row g-3">
                                     <article class="col-md-4">
                                         <label class="form-label">Monto</label>
                                         <input type="number" name="monto" class="form-control" min="0" required>
@@ -119,24 +119,24 @@ $page_class = 'ga-register-page';
                                             <?php endforeach; ?>
                                         </select>
                                     </article>
-                                </div>
+                                </section>
 
                                 <p class="ga-register-hint">La fecha de vencimiento se calcula al confirmar.</p>
                             </section>
 
-                            <div class="ga-form-actions">
+                            <section class="ga-form-actions">
                                 <button type="submit" class="btn ga-btn-primary" data-ga-register-btn>
                                     Continuar a confirmacion
                                 </button>
                                 <a href="frontend/inicio.php" class="btn ga-btn-ghost">
                                     Cancelar
                                 </a>
-                            </div>
+                            </section>
                         </form>
                     </article>
-                </div>
-            </div>
-        </div>
+                </section>
+            </section>
+        </section>
     </section>
 </main>
 
@@ -170,4 +170,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
 

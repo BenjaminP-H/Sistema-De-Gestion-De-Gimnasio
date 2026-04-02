@@ -80,29 +80,29 @@ $page_class = 'ga-search-page';
 <main class="ga-search-main">
 
     <section class="ga-hero">
-        <div class="container">
-            <div class="row align-items-center gy-4">
-                <div class="col-lg-6">
-                    <div class="ga-hero-copy">
+        <section class="container">
+            <section class="row align-items-center gy-4">
+                <section class="col-lg-6">
+                    <section class="ga-hero-copy">
                         <span class="ga-kicker">Renovaciones y membresias</span>
                         <h1 class="ga-hero-title">Encontra clientes en segundos</h1>
                         <p class="ga-hero-sub">
                             Busca por DNI y obtene al instante estado, plan vigente y fecha de vencimiento.
                             Todo listo para continuar con la renovacion.
                         </p>
-                    </div>
-                </div>
+                    </section>
+                </section>
 
-                <div class="col-lg-6">
+                <section class="col-lg-6">
                     <aside class="ga-search-panel">
-                        <div class="ga-panel-header">
+                        <section class="ga-panel-header">
                             <h3>Buscar por DNI</h3>
                             <p>Ingresa el documento para ver la ficha completa del cliente.</p>
-                        </div>
+                        </section>
 
                         <form method="POST" class="ga-search-form" data-ga-search-form>
                             <label for="dni" class="ga-label">DNI del cliente</label>
-                            <div class="ga-input-wrap">
+                            <section class="ga-input-wrap">
                                 <i class="bi bi-person-vcard"></i>
                                 <input
                                     type="text"
@@ -115,39 +115,39 @@ $page_class = 'ga-search-page';
                                     inputmode="numeric"
                                     data-ga-dni
                                 >
-                            </div>
+                            </section>
 
-                            <div class="ga-search-actions">
+                            <section class="ga-search-actions">
                                 <button class="btn ga-btn-primary" data-ga-submit>
                                     Buscar cliente
                                 </button>
                                 <a href="frontend/inicio.php" class="btn ga-btn-ghost">
                                     Cancelar
                                 </a>
-                            </div>
+                            </section>
                         </form>
 
                         <?php if ($error): ?>
-                            <div class="ga-alert ga-alert-danger">
+                            <section class="ga-alert ga-alert-danger">
                                 <?= htmlspecialchars($error) ?>
-                            </div>
+                            </section>
                         <?php endif; ?>
 
                         <p class="ga-panel-hint">Tip: si el cliente no aparece, revisa que el DNI este cargado sin puntos.</p>
                     </aside>
-                </div>
-            </div>
-        </div>
+                </section>
+            </section>
+        </section>
     </section>
 
     <section class="container ga-results">
         <?php if ($cliente): ?>
             <article class="ga-result-card">
                 <header class="ga-result-header">
-                    <div>
+                    <section>
                         <p class="ga-result-eyebrow">Resultado</p>
                         <h3>Cliente encontrado</h3>
-                    </div>
+                    </section>
                     <?php if ($pago): ?>
                         <span class="ga-status <?= $estado_real === 'Activo' ? 'ga-status-ok' : 'ga-status-warn' ?>">
                             <?= $estado_real ?>
@@ -157,50 +157,50 @@ $page_class = 'ga-search-page';
                     <?php endif; ?>
                 </header>
 
-                <div class="ga-result-body">
-                    <div class="ga-result-grid">
-                        <div class="ga-result-media">
+                <section class="ga-result-body">
+                    <section class="ga-result-grid">
+                        <section class="ga-result-media">
                             <img src="img/clientes/sinfoto.webp" alt="Foto cliente">
-                            <div class="ga-result-meta">
+                            <section class="ga-result-meta">
                                 <span>Registrado</span>
                                 <strong><?= htmlspecialchars($cliente['fecha_alta']) ?></strong>
                                 <?php if ($pago): ?>
                                     <span>Ultimo pago</span>
                                     <strong><?= htmlspecialchars($pago['fecha_pago']) ?></strong>
                                 <?php endif; ?>
-                            </div>
-                        </div>
+                            </section>
+                        </section>
 
-                        <div class="ga-result-info">
+                        <section class="ga-result-info">
                             <h4><?= htmlspecialchars($cliente['nombre'].' '.$cliente['apellido']) ?></h4>
 
-                            <div class="ga-info-grid">
-                                <div>
+                            <section class="ga-info-grid">
+                                <section>
                                     <span>DNI</span>
                                     <strong><?= htmlspecialchars($cliente['dni']) ?></strong>
-                                </div>
-                                <div>
+                                </section>
+                                <section>
                                     <span>Telefono</span>
                                     <strong><?= htmlspecialchars($cliente['telefono'] ?: '-') ?></strong>
-                                </div>
-                                <div>
+                                </section>
+                                <section>
                                     <span>Plan</span>
                                     <strong><?= htmlspecialchars($pago['nombre_plan'] ?? 'Sin pagos registrados') ?></strong>
-                                </div>
-                                <div>
+                                </section>
+                                <section>
                                     <span>Vencimiento</span>
                                     <strong><?= htmlspecialchars($fecha_vencimiento ?: '-') ?></strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                </section>
+                            </section>
+                        </section>
+                    </section>
 
-                    <div class="ga-result-actions">
+                    <section class="ga-result-actions">
                         <a href="frontend/renovacion.php?id_cliente=<?= $cliente['id'] ?>" class="btn ga-btn-primary">
                             Renovar membresia
                         </a>
-                    </div>
-                </div>
+                    </section>
+                </section>
             </article>
         <?php endif; ?>
     </section>
@@ -230,4 +230,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
 

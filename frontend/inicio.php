@@ -94,58 +94,58 @@ $mostrar_filtros = true;
 
 <main class="ga-inicio-main">
     <section class="ga-inicio-hero">
-        <div class="container">
-            <div class="row align-items-center gy-4">
-                <div class="col-lg-6">
+        <section class="container">
+            <section class="row align-items-center gy-4">
+                <section class="col-lg-6">
                     <span class="ga-kicker">Panel operativo</span>
                     <h1 class="ga-hero-title">Control total de tus clientes</h1>
                     <p class="ga-hero-sub">
                         Visualiza estados, planes y vencimientos al instante. Usa los filtros
                         del menu para afinar el listado y actuar rapido.
                     </p>
-                </div>
+                </section>
 
-                <div class="col-lg-6">
-                    <div class="ga-inicio-stats">
-                        <div class="ga-stat-card">
+                <section class="col-lg-6">
+                    <section class="ga-inicio-stats">
+                        <section class="ga-stat-card">
                             <span class="ga-stat-label">Clientes totales</span>
                             <span class="ga-stat-value"><?= $total_clientes ?></span>
-                        </div>
-                        <div class="ga-stat-card">
+                        </section>
+                        <section class="ga-stat-card">
                             <span class="ga-stat-label">Activos</span>
                             <span class="ga-stat-value"><?= $activos ?></span>
-                        </div>
-                        <div class="ga-stat-card">
+                        </section>
+                        <section class="ga-stat-card">
                             <span class="ga-stat-label">Inactivos</span>
                             <span class="ga-stat-value"><?= $inactivos ?></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </section>
     </section>
 
     <section class="container ga-inicio-table-section">
-        <div class="ga-inicio-table-header">
-            <div>
+        <section class="ga-inicio-table-header">
+            <section>
                 <p class="ga-result-eyebrow">Listado</p>
                 <h3>Clientes registrados</h3>
-            </div>
-            <div class="ga-inicio-summary">
+            </section>
+            <section class="ga-inicio-summary">
                 <span class="ga-summary-pill">Activos: <?= $activos ?></span>
                 <span class="ga-summary-pill">Inactivos: <?= $inactivos ?></span>
-            </div>
-        </div>
+            </section>
+        </section>
 
-        <div class="ga-inicio-table-card">
+        <section class="ga-inicio-table-card">
             <?php if (empty($clientes)): ?>
-                <div class="ga-empty">
+                <section class="ga-empty">
                     <h4>No hay clientes para mostrar</h4>
                     <p>Registra un cliente nuevo o ajusta los filtros del menu.</p>
                     <a href="frontend/registro.php" class="btn ga-btn-primary">Registrar cliente</a>
-                </div>
+                </section>
             <?php else: ?>
-                <div class="table-responsive">
+                <section class="table-responsive">
                     <table class="table table-hover align-middle mb-0 ga-table">
                         <thead>
                             <tr>
@@ -201,12 +201,13 @@ $mostrar_filtros = true;
                         <?php } ?>
                         </tbody>
                     </table>
-                </div>
+                </section>
             <?php endif; ?>
-        </div>
+        </section>
     </section>
 </main>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
 
 

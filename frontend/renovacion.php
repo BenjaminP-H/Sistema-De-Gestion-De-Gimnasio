@@ -52,9 +52,9 @@ $menu_activo = 'renovacion';
 
     <!-- MENSAJE FLASH -->
     <?php if (!empty($_SESSION['flash_message'])): ?>
-        <div class="alert alert-<?= $_SESSION['flash_type'] ?> text-center">
+        <section class="alert alert-<?= $_SESSION['flash_type'] ?> text-center">
             <?= $_SESSION['flash_message'] ?>
-        </div>
+        </section>
         <?php
             unset($_SESSION['flash_message']);
             unset($_SESSION['flash_type']);
@@ -68,7 +68,7 @@ $menu_activo = 'renovacion';
         <input type="hidden" name="id_cliente" value="<?= htmlspecialchars($id_cliente) ?>">
 
         <!-- PLAN -->
-        <div class="mb-3">
+        <section class="mb-3">
             <label class="form-label">Plan</label>
             <select name="gym_plan_id" class="form-select" required>
                 <option value="">Seleccionar plan</option>
@@ -78,10 +78,10 @@ $menu_activo = 'renovacion';
                     </option>
                 <?php endforeach; ?>
             </select>
-        </div>
+        </section>
 
         <!-- DIAS -->
-        <div class="mb-3">
+        <section class="mb-3">
             <label class="form-label">Dias a pagar</label>
             <input
                 type="number"
@@ -90,10 +90,10 @@ $menu_activo = 'renovacion';
                 min="1"
                 required
             >
-        </div>
+        </section>
 
         <!-- MONTO -->
-        <div class="mb-3">
+        <section class="mb-3">
             <label class="form-label">Monto</label>
             <input
                 type="number"
@@ -103,20 +103,20 @@ $menu_activo = 'renovacion';
                 step="0.01"
                 required
             >
-        </div>
+        </section>
 
         <!-- METODO DE PAGO -->
-        <div class="mb-3">
+        <section class="mb-3">
             <label class="form-label">Metodo de pago</label>
             <select name="metodo_pago" class="form-select" required>
                 <option value="">Seleccionar</option>
                 <option value="Efectivo">Efectivo</option>
                 <option value="Transferencia">Transferencia</option>
             </select>
-        </div>
+        </section>
 
         <!-- BOTONES -->
-        <div class="d-grid gap-2">
+        <section class="d-grid gap-2">
             <button type="submit" class="btn btn-success">
                 Continuar
             </button>
@@ -124,10 +124,11 @@ $menu_activo = 'renovacion';
             <a href="frontend/inicio.php" class="btn btn-secondary">
                 Cancelar
             </a>
-        </div>
+        </section>
 
     </form>
 
 </main>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+

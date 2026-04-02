@@ -9,9 +9,9 @@ $page_class = 'ga-login-page';
 
 <main class="ga-login-main">
     <section class="ga-login-hero">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-5 col-md-7">
+        <section class="container">
+            <section class="row justify-content-center">
+                <section class="col-lg-5 col-md-7">
                     <article class="ga-login-panel">
                         <header class="ga-panel-header text-center">
                             <span class="ga-kicker">Acceso seguro</span>
@@ -24,7 +24,7 @@ $page_class = 'ga-login-page';
                         <form action="backend/procesar.php" method="POST" novalidate data-ga-login-form>
                             <section class="ga-login-field">
                                 <label class="ga-label">Usuario</label>
-                                <div class="ga-input-wrap">
+                                <section class="ga-input-wrap">
                                     <i class="bi bi-person-fill"></i>
                                     <input
                                         type="text"
@@ -34,12 +34,12 @@ $page_class = 'ga-login-page';
                                         required
                                         autocomplete="off"
                                     >
-                                </div>
+                                </section>
                             </section>
 
                             <section class="ga-login-field">
                                 <label class="ga-label">Contrasena</label>
-                                <div class="ga-input-wrap">
+                                <section class="ga-input-wrap">
                                     <i class="bi bi-lock-fill"></i>
                                     <input
                                         type="password"
@@ -48,7 +48,7 @@ $page_class = 'ga-login-page';
                                         placeholder="Ingresa tu contrasena"
                                         required
                                     >
-                                </div>
+                                </section>
                             </section>
 
                             <button type="submit" class="btn ga-btn-primary w-100" data-ga-login-btn>
@@ -58,9 +58,9 @@ $page_class = 'ga-login-page';
 
                         <p class="ga-login-helper">Si olvidaste tus credenciales, contacta al administrador.</p>
                     </article>
-                </div>
-            </div>
-        </div>
+                </section>
+            </section>
+        </section>
     </section>
 </main>
 
@@ -80,4 +80,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <?php require_once __DIR__ . '/../reutilizable/footer.php'; ?>
+
 

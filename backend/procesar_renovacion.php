@@ -147,7 +147,7 @@ salida:
 <head>
     <meta charset="UTF-8">
     <title>Renovación</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script>
         let segundos = 5;
         setInterval(() => {
@@ -161,23 +161,24 @@ salida:
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center" style="min-height:100vh;">
 
-<div class="card shadow p-4 text-center" style="max-width:500px;">
+<section class="card shadow p-4 text-center" style="max-width:500px;">
     <?php if ($estado === 'success'): ?>
-        <div class="alert alert-success">
+        <section class="alert alert-success">
             <h4 class="alert-heading">✅ Éxito</h4>
             <p><?= $mensaje ?></p>
-        </div>
+        </section>
     <?php else: ?>
-        <div class="alert alert-danger">
+        <section class="alert alert-danger">
             <h4 class="alert-heading">❌ Error</h4>
             <p><?= $mensaje ?></p>
-        </div>
+        </section>
     <?php endif; ?>
 
     <p class="text-muted mb-0">
         Redirigiendo al inicio en <strong><span id="contador">5</span></strong> segundos…
     </p>
-</div>
+</section>
 
 </body>
 </html>
+

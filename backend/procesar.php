@@ -22,7 +22,7 @@ if ($_SESSION['intentos'][$usuario] >= 5 || $_SESSION['intentos'][$ip] >= 5) {
     exit;
 }
 
-$sql = "SELECT id, usuario, password, rol, gym_id FROM usuarios WHERE usuario = :usuario";
+$sql = "SELECT id, usuario, password, rol, gym_id FROM usuarios WHERE usuario = :usuario AND activo = 1";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
 $stmt->execute();
